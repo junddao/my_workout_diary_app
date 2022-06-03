@@ -33,6 +33,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.2.2
+  font_awesome_flutter: ^10.1.0
   intl: ^0.17.0
   logger: ^1.1.0
   package_info_plus: ^1.4.2
@@ -52,6 +53,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/icons/
+    - assets/texts/
     - assets/images/
   # To add assets to your application, add an assets section, like this:
   # assets:

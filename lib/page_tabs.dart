@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class PageTab extends StatefulWidget {
-  const PageTab({Key? key}) : super(key: key);
+class PageTabs extends StatefulWidget {
+  const PageTabs({Key? key}) : super(key: key);
 
   @override
-  State<PageTab> createState() => _PageTabState();
+  State<PageTabs> createState() => _PageTabsState();
 }
 
-class _PageTabState extends State<PageTab> {
+class _PageTabsState extends State<PageTabs> {
   @override
   Widget build(BuildContext context) {
     return PageTabView();

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
+import 'package:my_workout_diary_app/global/style/constants.dart';
+import 'package:my_workout_diary_app/page_tabs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({Key? key}) : super(key: key);
@@ -11,55 +15,43 @@ class _PageHomeState extends State<PageHome> {
   int currentPageIndex = 0;
   @override
   Widget build(BuildContext context) {
+    return const PageHomeView();
+  }
+}
+
+class PageHomeView extends StatefulWidget {
+  const PageHomeView({Key? key}) : super(key: key);
+
+  @override
+  State<PageHomeView> createState() => _PageHomeViewState();
+}
+
+class _PageHomeViewState extends State<PageHomeView> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() => _isLogin());
+  }
+
+  void _isLogin() async {
+    String? myToken = await ModelSharedPreferences.readToken();
+
+    if (myToken == '') {
+      // 토큰 가져오는 api 호출
+      Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('hihi  DDU'),
-        centerTitle: false,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.plus_one),
-      ),
-      body: <Widget>[
-        Container(
-          color: Colors.red,
-          alignment: Alignment.center,
-          child: const Text('Page 1'),
-        ),
-        Container(
-          color: Colors.green,
-          alignment: Alignment.center,
-          child: const Text('Page 2'),
-        ),
-        Container(
-          color: Colors.blue,
-          alignment: Alignment.center,
-          child: const Text('Page 3'),
-        ),
-      ][currentPageIndex],
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.explore),
-            label: 'Explore',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.commute),
-            label: 'Commute',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.bookmark),
-            icon: Icon(Icons.bookmark_border),
-            label: 'Saved',
-          ),
-        ],
-      ),
+      body: _body(),
     );
+  }
+
+  Widget _body() {
+    return const PageTabs();
   }
 }

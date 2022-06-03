@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dscolors.dart';
+import 'ds_colors.dart';
 
 class DSTextStyles {
   static const nav = TextStyle(
@@ -8,48 +8,30 @@ class DSTextStyles {
       fontWeight: FontWeight.w700,
       color: Color(0xFF1F1F1F),
       fontStyle: FontStyle.normal);
-  static const title2 = TextStyle(
-      fontSize: 16, fontWeight: FontWeight.w400, color: DSColors.text2);
-  static const body2 = TextStyle(
-      fontSize: 14, fontWeight: FontWeight.w400, color: DSColors.text2);
-  static const button =
-      TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white);
-  static const cellBoldBody = TextStyle(
-      fontSize: 13, fontWeight: FontWeight.w700, color: DSColors.text2);
-  static const cellBody = TextStyle(
-      fontSize: 13, fontWeight: FontWeight.w400, color: DSColors.text2);
+  static const title2 = TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: DSColors.text2);
+  static const body2 = TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: DSColors.text2);
+  static const button = TextStyle(fontSize: 17, fontWeight: FontWeight.w400, color: Colors.white);
+  static const cellBoldBody = TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: DSColors.text2);
+  static const cellBody = TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: DSColors.text2);
 
-  static const h1 = TextStyle(
-      fontSize: 38, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const h2 = TextStyle(
-      fontSize: 28, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const h3 = TextStyle(
-      fontSize: 22, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const h4 = TextStyle(
-      fontSize: 20, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const h5 = TextStyle(
-      fontSize: 18, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const h6 = TextStyle(
-      fontSize: 18, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const p1 = TextStyle(
-      fontSize: 16, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const p2 = TextStyle(
-      fontSize: 16, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const p3 = TextStyle(
-      fontSize: 14, fontWeight: FontWeight.w400, color: DSColors.gray9);
-  static const p4 = TextStyle(
-      fontSize: 12, fontWeight: FontWeight.w300, color: DSColors.gray9);
-  static const p5 = TextStyle(
-      fontSize: 12, fontWeight: FontWeight.w200, color: DSColors.gray9);
+  static const h1 = TextStyle(fontSize: 38, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const h2 = TextStyle(fontSize: 28, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const h3 = TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const h4 = TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const h5 = TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const h6 = TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const p1 = TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const p2 = TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const p3 = TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: DSColors.gray9);
+  static const p4 = TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: DSColors.gray9);
+  static const p5 = TextStyle(fontSize: 12, fontWeight: FontWeight.w200, color: DSColors.gray9);
 
   static regularFont({double fontSize = 12, color = DSColors.gray9}) {
-    return TextStyle(
-        fontSize: fontSize, fontWeight: FontWeight.w400, color: color);
+    return TextStyle(fontSize: fontSize, fontWeight: FontWeight.w400, color: color);
   }
 
   static boldFont({double fontSize = 12, color = DSColors.gray9}) {
-    return TextStyle(
-        fontSize: fontSize, fontWeight: FontWeight.bold, color: color);
+    return TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: color);
   }
 
   static const mediaum50White = const TextStyle(

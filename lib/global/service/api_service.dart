@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:my_workout_diary_app/model/model_config.dart';
-import 'package:my_workout_diary_app/model/model_shared_preferences.dart';
+import 'package:my_workout_diary_app/global/model/model_config.dart';
+import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class ApiService {
