@@ -74,13 +74,13 @@ class _DUButtonCalendar extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('취소')),
+                    TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('취소')),
                     TextButton(
                         onPressed: () {
                           onDaySelected.call(selectedDays.value);
                           Navigator.of(context).pop();
                         },
-                        child: Text('확인'))
+                        child: const Text('확인'))
                   ],
                 ),
                 _defaultTableCalendar(
@@ -182,21 +182,21 @@ TableCalendar _defaultTableCalendar(
       calendarFormat: calendarFormat.name,
     },
     headerStyle: const HeaderStyle(
-      titleTextStyle: TextStyle(color: DSColors.gray4, fontSize: 16, fontWeight: FontWeight.w500),
-      formatButtonTextStyle: TextStyle(color: DSColors.gray4),
+      titleTextStyle: TextStyle(color: DSColors.gray6, fontSize: 16, fontWeight: FontWeight.w500),
+      formatButtonTextStyle: TextStyle(color: DSColors.gray6),
       leftChevronIcon: Icon(
         Icons.chevron_left,
-        color: DSColors.gray4,
+        color: DSColors.gray6,
       ),
       rightChevronIcon: Icon(
         Icons.chevron_right,
-        color: DSColors.gray4,
+        color: DSColors.gray6,
       ),
     ),
     calendarStyle: const CalendarStyle(
-      defaultTextStyle: TextStyle(color: DSColors.gray4),
+      defaultTextStyle: TextStyle(color: DSColors.gray6),
       weekendTextStyle: TextStyle(color: DSColors.tomato),
-      outsideTextStyle: TextStyle(color: DSColors.gray6),
+      outsideTextStyle: TextStyle(color: DSColors.gray3),
     ),
     daysOfWeekStyle: DaysOfWeekStyle(
       dowTextFormatter: (date, locale) {
@@ -204,7 +204,7 @@ TableCalendar _defaultTableCalendar(
             ? DateFormat.E(locale).format(date).substring(0, 1)
             : DateFormat.E(locale).format(date).substring(0, 2);
       },
-      weekdayStyle: const TextStyle(color: DSColors.gray4),
+      weekdayStyle: const TextStyle(color: DSColors.gray6),
       weekendStyle: const TextStyle(color: DSColors.tomato),
     ),
     headerVisible: true,
@@ -212,16 +212,16 @@ TableCalendar _defaultTableCalendar(
       todayBuilder: (context, day, focusedDay) {
         return Container(
           decoration: BoxDecoration(
-            color: DSColors.tomato.withOpacity(0.5),
+            color: DSColors.facebook_blue.withOpacity(0.5),
             shape: BoxShape.circle,
           ),
           margin: const EdgeInsets.all(4.0),
           child: Center(
             child: Text(
               '${day.day}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16.0,
-                color: DSColors.gray2,
+                color: DSColors.white,
               ),
             ),
           ),
@@ -237,7 +237,7 @@ TableCalendar _defaultTableCalendar(
           child: Center(
             child: Text(
               '${day.day}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16.0,
                 color: DSColors.white,
               ),

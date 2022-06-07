@@ -44,7 +44,7 @@ class _PageMainViewState extends State<PageMainView> {
       child: Column(
         children: [
           DUCalendar(
-            singleSelect: false,
+            singleSelect: true,
             onDaySelected: (dateTime) {
               debugPrint(dateTime.toString());
             },
