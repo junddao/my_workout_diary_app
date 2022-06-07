@@ -38,6 +38,7 @@ dependencies:
   logger: ^1.1.0
   package_info_plus: ^1.4.2
   shared_preferences: ^2.0.15
+  table_calendar: ^3.0.6
 
 dev_dependencies:
   flutter_lints: ^1.0.0
@@ -53,7 +54,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/icons/
+    # - assets/icons/
     - assets/texts/
     - assets/images/
   # To add assets to your application, add an assets section, like this:
