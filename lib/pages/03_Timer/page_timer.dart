@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_workout_diary_app/global/enum/item_type.dart';
+import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
+import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/components/widget_interval.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/components/widget_rest_time.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/components/widget_set_interval.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/components/widget_set_rest_time.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/components/widget_set_workout_time.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/components/widget_workout_time.dart';
+import 'package:provider/provider.dart';
 
 class PageTimer extends StatefulWidget {
   const PageTimer({Key? key}) : super(key: key);
@@ -25,9 +35,19 @@ class PageTimerView extends StatefulWidget {
 }
 
 class _PageTimerViewState extends State<PageTimerView> {
+  Color unselectedColor = DSColors.white;
+  Color selectedColor = DSColors.tomato;
+  int selectedGridIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed('PagePlay');
+        },
+        child: const Text('Go!', style: DSTextStyles.bold12Black),
+      ),
       appBar: _appBar(),
       body: _body(),
     );
@@ -45,19 +65,14 @@ class _PageTimerViewState extends State<PageTimerView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
-          child: SvgPicture.asset(
-            'assets/images/health1.svg',
-            width: SizeConfig.screenWidth * 0.5,
-          ),
-        ),
+        settingWidget(),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('루틴 설정', style: DSTextStyles.bold14Grey06),
+                const Text('루틴 설정', style: DSTextStyles.bold18Grey06),
                 const SizedBox(
                   height: 8,
                 ),
@@ -68,15 +83,9 @@ class _PageTimerViewState extends State<PageTimerView> {
                     childAspectRatio: 1 / 0.8,
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
-                    children: List.generate(6, (index) {
+                    children: List.generate(3, (index) {
                       //item 의 반목문 항목 형성
-                      return Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Text(' Item : $index'),
-                      );
+                      return _buildGridItem(index);
                     }),
                   ),
                 ),
@@ -86,5 +95,42 @@ class _PageTimerViewState extends State<PageTimerView> {
         ),
       ],
     );
+  }
+
+  Widget settingWidget() {
+    Widget widget;
+    ItemType item = context.watch<WorkoutProvider>().selectedType;
+    switch (item) {
+      case ItemType.workout:
+        widget = const WidgetSetWorkoutTime();
+        break;
+      case ItemType.rest:
+        widget = const WidgetSetRestTime();
+        break;
+      case ItemType.interval:
+        widget = const WidgetSetInterval();
+        break;
+      default:
+        widget = Container();
+    }
+    return widget;
+  }
+
+  Widget _buildGridItem(int index) {
+    Widget widget;
+    switch (index) {
+      case 0:
+        widget = WidgetWorkoutTime();
+        break;
+      case 1:
+        widget = WidgetRestTime();
+        break;
+      case 2:
+        widget = WidgetInterval();
+        break;
+      default:
+        widget = Container();
+    }
+    return widget;
   }
 }

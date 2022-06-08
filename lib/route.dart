@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/page_tabs.dart';
 import 'package:my_workout_diary_app/pages/01_login/page_login.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/page_play.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -17,6 +18,11 @@ class Routers {
       case 'PageLogin':
         return CupertinoPageRoute(
           builder: (_) => PageLogin(),
+          settings: settings,
+        );
+      case 'PagePlay':
+        return CupertinoPageRoute(
+          builder: (_) => PagePlay(),
           settings: settings,
         );
 

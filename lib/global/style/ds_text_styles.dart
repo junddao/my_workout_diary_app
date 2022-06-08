@@ -117,6 +117,12 @@ class DSTextStyles {
       fontFamily: "NotoSansKR",
       fontStyle: FontStyle.normal,
       fontSize: 18.0);
+  static const bold18NaverGreen = const TextStyle(
+      color: DSColors.naver_green,
+      fontWeight: FontWeight.w700,
+      fontFamily: "NotoSansKR",
+      fontStyle: FontStyle.normal,
+      fontSize: 18.0);
 
   static const bold18White = const TextStyle(
       color: DSColors.white,
@@ -727,6 +733,14 @@ class DSTextStyles {
 
   static const regular40black = const TextStyle(
     color: Colors.black,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'NotoSansKR',
+    fontSize: 40.0,
+    fontStyle: FontStyle.normal,
+    // height: 1.5,
+  );
+  static const regular40white = const TextStyle(
+    color: Colors.white,
     fontWeight: FontWeight.w400,
     fontFamily: 'NotoSansKR',
     fontSize: 40.0,

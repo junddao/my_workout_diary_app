@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/components/ds_calendar.dart';
 
-class PageMain extends StatefulWidget {
-  const PageMain({Key? key}) : super(key: key);
+class PageRecord extends StatefulWidget {
+  const PageRecord({Key? key}) : super(key: key);
 
   @override
-  State<PageMain> createState() => _PageMainState();
+  State<PageRecord> createState() => _PageRecordState();
 }
 
-class _PageMainState extends State<PageMain> {
+class _PageRecordState extends State<PageRecord> {
   @override
   Widget build(BuildContext context) {
     return const PageMainView();

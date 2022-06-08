@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:my_workout_diary_app/pages/02_Main/page_main.dart';
+import 'package:my_workout_diary_app/global/style/ds_colors.dart';
+import 'package:my_workout_diary_app/pages/02_record/page_record.dart';
 import 'package:my_workout_diary_app/pages/03_Timer/page_timer.dart';
 import 'package:my_workout_diary_app/pages/04_User/page_user.dart';
 
@@ -28,8 +29,8 @@ class PageTabView extends StatefulWidget {
 
 class _PageTabViewState extends State<PageTabView> {
   final List _pages = const [
-    PageMain(),
     PageTimer(),
+    PageRecord(),
     PageUser(),
   ];
 
@@ -37,10 +38,6 @@ class _PageTabViewState extends State<PageTabView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.plus_one),
-      ),
       body: _body(),
       bottomNavigationBar: _bottomNavigationBar(),
     );
@@ -52,6 +49,7 @@ class _PageTabViewState extends State<PageTabView> {
 
   Widget _bottomNavigationBar() {
     return NavigationBar(
+      backgroundColor: DSColors.white,
       onDestinationSelected: (int index) {
         setState(() {
           _selectedIndex = index;
@@ -60,14 +58,14 @@ class _PageTabViewState extends State<PageTabView> {
       selectedIndex: _selectedIndex,
       destinations: const <Widget>[
         NavigationDestination(
-          selectedIcon: Icon(Icons.home),
-          icon: Icon(Icons.home_outlined),
-          label: '메인',
-        ),
-        NavigationDestination(
           selectedIcon: Icon(Icons.timer),
           icon: Icon(Icons.timer_outlined),
           label: '타이머',
+        ),
+        NavigationDestination(
+          selectedIcon: Icon(Icons.home),
+          icon: Icon(Icons.home_outlined),
+          label: '기록',
         ),
         NavigationDestination(
           selectedIcon: Icon(Icons.person),
