@@ -110,15 +110,15 @@ class DSTextStyles {
       fontFamily: "NotoSansKR",
       fontStyle: FontStyle.normal,
       fontSize: 18.0);
-
-  static const bold18FacebookBlue = const TextStyle(
-      color: DSColors.facebook_blue,
+  static const bold18NaverGreen = const TextStyle(
+      color: DSColors.naver_green,
       fontWeight: FontWeight.w700,
       fontFamily: "NotoSansKR",
       fontStyle: FontStyle.normal,
       fontSize: 18.0);
-  static const bold18NaverGreen = const TextStyle(
-      color: DSColors.naver_green,
+
+  static const bold18FacebookBlue = const TextStyle(
+      color: DSColors.facebook_blue,
       fontWeight: FontWeight.w700,
       fontFamily: "NotoSansKR",
       fontStyle: FontStyle.normal,

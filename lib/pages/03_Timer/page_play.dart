@@ -2,10 +2,16 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
+import 'package:my_workout_diary_app/global/enum/countdown_type.dart';
+import 'package:my_workout_diary_app/global/enum/item_type.dart';
+import 'package:my_workout_diary_app/global/enum/working_type.dart';
+import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
+import 'package:provider/provider.dart';
 
 class PagePlay extends StatefulWidget {
   const PagePlay({Key? key}) : super(key: key);
@@ -29,8 +35,34 @@ class PagePlayView extends StatefulWidget {
 }
 
 class _PagePlayViewState extends State<PagePlayView> {
+  int readyTime = 5;
+  int workoutTime = 20;
+  int restTime = 30;
+
+  int currentInterval = 1;
+
+  bool isStarted = false;
+  bool isWorkout = false;
+  late WorkoutProvider workoutProvider;
+
+  final player = AudioPlayer();
+
+  CountDownController workoutCountdownController = CountDownController();
+  CountDownController restCountdownController = CountDownController();
+
+  @override
+  void initState() {
+    Future.microtask(() {
+      workoutProvider.setCountdownType(CountdownType.stopped);
+      workoutProvider.setWorkingType(WorkingType.ready);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    workoutProvider = context.watch<WorkoutProvider>();
+
     return Scaffold(
       appBar: _appBar(),
       body: _body(),
@@ -41,17 +73,44 @@ class _PagePlayViewState extends State<PagePlayView> {
 
   Widget _bottomSheet() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        if (workoutProvider.countdownType == CountdownType.stopped) {
+          workoutProvider.setCountdownType(CountdownType.started);
+          workoutProvider.setWorkingType(WorkingType.ready);
+          workoutCountdownController.start();
+        } else if (workoutProvider.countdownType == CountdownType.started) {
+          workoutProvider.setCountdownType(CountdownType.paused);
+          workoutCountdownController.pause();
+        } else if (workoutProvider.countdownType == CountdownType.paused) {
+          workoutProvider.setCountdownType(CountdownType.started);
+          workoutCountdownController.resume();
+        }
+      },
       child: Container(
         width: SizeConfig.screenWidth,
         height: 130,
         decoration: BoxDecoration(
-          color: DSColors.tomato,
-          borderRadius: BorderRadius.circular(12),
+          color: (() {
+            if (workoutProvider.workingType == WorkingType.rest) {
+              return DSColors.facebook_blue;
+            }
+            if (workoutProvider.workingType == WorkingType.workout) {
+              return DSColors.tomato;
+            }
+            return DSColors.naver_green;
+          }()),
         ),
         child: Center(
           child: Icon(
-            Icons.play_arrow,
+            (() {
+              if (workoutProvider.countdownType == CountdownType.started) {
+                return Icons.pause;
+              } else if (workoutProvider.countdownType == CountdownType.paused) {
+                return Icons.play_arrow;
+              } else if (workoutProvider.countdownType == CountdownType.stopped) {
+                return Icons.play_arrow;
+              }
+            }()),
             color: Colors.white,
             size: 36,
           ),
@@ -76,7 +135,28 @@ class _PagePlayViewState extends State<PagePlayView> {
               workoutCountWidget(),
             ],
           ),
+          SizedBox(height: 18),
+
+          (() {
+            if (workoutProvider.workingType == WorkingType.rest) {
+              return Text('휴식중', style: DSTextStyles.bold18FacebookBlue);
+            }
+            if (workoutProvider.workingType == WorkingType.workout) {
+              return Text('운동중', style: DSTextStyles.bold18Tomato);
+            }
+            return Text('준비!', style: DSTextStyles.bold18NaverGreen);
+          }()),
+
           workoutTimerWidget(),
+
+          // Visibility(
+          //   visible: data.workingType == WorkingType.rest,
+          //   child: restTimerWidget(data),
+          // ),
+          // Visibility(
+          //   visible: data.workingType == WorkingType.workout,
+          //   child: workoutTimerWidget(data),
+          // ),
         ],
       ),
     );
@@ -97,20 +177,38 @@ class _PagePlayViewState extends State<PagePlayView> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.play_circle, color: DSColors.facebook_blue),
-              SizedBox(
-                width: 8,
-              ),
-              Text('남은횟수', style: DSTextStyles.regular18black),
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.play_circle, color: DSColors.facebook_blue),
+                SizedBox(
+                  width: 8,
+                ),
+                Text('루틴', style: DSTextStyles.regular18black),
+              ],
+            ),
           ),
           const SizedBox(height: 10),
-          Text(
-            '1/5',
-            style: DSTextStyles.bold18FacebookBlue,
+          RichText(
+            text: TextSpan(
+              style: DSTextStyles.bold18FacebookBlue,
+              children: [
+                TextSpan(
+                  text: '$currentInterval',
+                  // style: DSTextStyles.bold18FacebookBlue,
+                ),
+                TextSpan(
+                  text: ' / ',
+                  // style: DSTextStyles.bold18FacebookBlue,
+                ),
+                TextSpan(
+                  text: '${workoutProvider.interval.toInt()}',
+                  // style: DSTextStyles.bold18FacebookBlue,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -119,60 +217,88 @@ class _PagePlayViewState extends State<PagePlayView> {
 
   Widget workoutTimerWidget() {
     return CircularCountDownTimer(
-      duration: 10,
-      initialDuration: 0,
-      controller: CountDownController(),
-      width: SizeConfig.screenWidth * 0.7,
-      height: SizeConfig.screenHeight * 0.5,
-      ringColor: DSColors.gray1,
-      ringGradient: null,
-      fillColor: DSColors.red01,
-      fillGradient: null,
-      backgroundColor: DSColors.tomato,
-      backgroundGradient: null,
-      strokeWidth: 20.0,
-      strokeCap: StrokeCap.round,
-      textStyle: DSTextStyles.bold32white,
-      textFormat: CountdownTextFormat.S,
-      isReverse: false,
-      isReverseAnimation: false,
-      isTimerTextShown: true,
-      autoStart: false,
-      onStart: () {
-        debugPrint('Countdown Started');
-      },
-      onComplete: () {
-        debugPrint('Countdown Ended');
-      },
-    );
-  }
+      // duration: data.workoutTime.toInt(),
+      duration: 5,
 
-  Widget restTimerWidget() {
-    return CircularCountDownTimer(
-      duration: 10,
       initialDuration: 0,
-      controller: CountDownController(),
+      controller: workoutCountdownController,
       width: SizeConfig.screenWidth * 0.7,
       height: SizeConfig.screenHeight * 0.5,
       ringColor: DSColors.gray1,
       ringGradient: null,
-      fillColor: DSColors.red01,
+      fillColor: (() {
+        if (workoutProvider.workingType == WorkingType.rest) {
+          return DSColors.blue1;
+        }
+        if (workoutProvider.workingType == WorkingType.workout) {
+          return DSColors.red01;
+        }
+        return DSColors.tomato_10;
+      }()),
+
       fillGradient: null,
-      backgroundColor: DSColors.tomato,
+      backgroundColor: (() {
+        if (workoutProvider.workingType == WorkingType.rest) {
+          return DSColors.facebook_blue;
+        }
+        if (workoutProvider.workingType == WorkingType.workout) {
+          return DSColors.tomato;
+        }
+        return DSColors.naver_green;
+      }()),
+
       backgroundGradient: null,
       strokeWidth: 20.0,
       strokeCap: StrokeCap.round,
       textStyle: DSTextStyles.bold32white,
       textFormat: CountdownTextFormat.S,
-      isReverse: false,
+      isReverse: true,
       isReverseAnimation: false,
       isTimerTextShown: true,
       autoStart: false,
+
       onStart: () {
         debugPrint('Countdown Started');
+        int duration = 5;
+        if (workoutProvider.workingType == WorkingType.rest) {
+          duration = workoutProvider.restTime.toInt();
+        }
+        if (workoutProvider.workingType == WorkingType.workout) {
+          duration = workoutProvider.workoutTime.toInt();
+        }
+        Future.delayed(
+          Duration(seconds: duration - 4),
+          () async {
+            var duration = await player.setAsset('assets/audios/countdown.wav');
+            player.play();
+          },
+        );
       },
       onComplete: () {
-        debugPrint('Countdown Ended');
+        player.pause();
+        if (workoutProvider.workingType == WorkingType.rest) {
+          workoutProvider.setWorkingType(WorkingType.workout);
+        } else if (workoutProvider.workingType == WorkingType.workout) {
+          currentInterval++;
+          workoutProvider.setWorkingType(WorkingType.rest);
+        } else if (workoutProvider.workingType == WorkingType.ready) {
+          workoutProvider.setWorkingType(WorkingType.workout);
+        }
+
+        if (currentInterval <= workoutProvider.interval) {
+          int duration = 5;
+          if (workoutProvider.workingType == WorkingType.rest) {
+            duration = workoutProvider.restTime.toInt();
+          }
+          if (workoutProvider.workingType == WorkingType.workout) {
+            duration = workoutProvider.workoutTime.toInt();
+          }
+
+          workoutCountdownController.restart(duration: duration);
+        } else {
+          currentInterval--;
+          print(workoutCountdownController);
+        }
       },
     );
   }

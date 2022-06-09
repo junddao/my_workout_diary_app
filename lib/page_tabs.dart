@@ -58,17 +58,17 @@ class _PageTabViewState extends State<PageTabView> {
       selectedIndex: _selectedIndex,
       destinations: const <Widget>[
         NavigationDestination(
-          selectedIcon: Icon(Icons.timer),
+          // selectedIcon: Icon(Icons.timer),
           icon: Icon(Icons.timer_outlined),
           label: '타이머',
         ),
         NavigationDestination(
-          selectedIcon: Icon(Icons.home),
+          // selectedIcon: Icon(Icons.home),
           icon: Icon(Icons.home_outlined),
           label: '기록',
         ),
         NavigationDestination(
-          selectedIcon: Icon(Icons.person),
+          // selectedIcon: Icon(Icons.person),
           icon: Icon(Icons.person_outline),
           label: '내정보',
         ),

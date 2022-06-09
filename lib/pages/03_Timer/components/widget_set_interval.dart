@@ -32,7 +32,7 @@ class _WidgetSetIntervalState extends State<WidgetSetInterval> {
                   text: TextSpan(
                     children: [
                       TextSpan(text: '${_currentSliderValue.toInt()}', style: DSTextStyles.regular40white),
-                      const TextSpan(text: '초', style: DSTextStyles.regular12White),
+                      const TextSpan(text: 'X', style: DSTextStyles.regular12White),
                     ],
                   ),
                 ),
@@ -41,7 +41,7 @@ class _WidgetSetIntervalState extends State<WidgetSetInterval> {
                   value: _currentSliderValue,
                   max: 10,
                   min: 1,
-                  divisions: 10,
+                  divisions: 9,
                   thumbColor: DSColors.white,
                   inactiveColor: DSColors.white,
                   activeColor: DSColors.white,

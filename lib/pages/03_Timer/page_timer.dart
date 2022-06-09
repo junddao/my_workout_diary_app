@@ -46,7 +46,7 @@ class _PageTimerViewState extends State<PageTimerView> {
         onPressed: () {
           Navigator.of(context).pushNamed('PagePlay');
         },
-        child: const Text('Go!', style: DSTextStyles.bold12Black),
+        child: const Text('Go!', style: DSTextStyles.bold12White),
       ),
       appBar: _appBar(),
       body: _body(),

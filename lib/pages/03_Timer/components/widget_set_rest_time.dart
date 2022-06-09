@@ -19,14 +19,14 @@ class _WidgetSetRestTimeState extends State<WidgetSetRestTime> {
       _currentSliderValue = data.restTime;
       return Container(
         decoration: BoxDecoration(
-          color: DSColors.tomato,
+          color: DSColors.facebook_blue,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Center(
             child: Column(
               children: [
-                const Text('운동시간', style: DSTextStyles.bold16White),
+                const Text('휴식시간', style: DSTextStyles.bold16White),
                 const SizedBox(height: 8),
                 RichText(
                   text: TextSpan(

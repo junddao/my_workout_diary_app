@@ -19,7 +19,7 @@ class _WidgetSetWorkoutTimeState extends State<WidgetSetWorkoutTime> {
       _currentSliderValue = data.workoutTime;
       return Container(
         decoration: BoxDecoration(
-          color: DSColors.facebook_blue,
+          color: DSColors.tomato,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),

@@ -11,40 +11,42 @@ class WidgetWorkoutTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         context.read<WorkoutProvider>().setItemType(ItemType.workout);
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: const [
-            BoxShadow(color: Colors.grey, offset: Offset(3, 3), blurRadius: 5),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.play_circle, color: DSColors.facebook_blue),
-                SizedBox(
-                  width: 8,
-                ),
-                Text('운동시간', style: DSTextStyles.regular18black),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              DataConvert.intToTimeLeft(context.watch<WorkoutProvider>().workoutTime.toInt()),
-              style: DSTextStyles.bold18FacebookBlue,
-            ),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+            boxShadow: const [
+              BoxShadow(color: Colors.grey, offset: Offset(3, 3), blurRadius: 5),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.play_circle, color: DSColors.tomato),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text('운동시간', style: DSTextStyles.regular18black),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                DataConvert.intToTimeLeft(context.watch<WorkoutProvider>().workoutTime.toInt()),
+                style: DSTextStyles.bold18Tomato,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/lib_color_schemes.g.dart';
 import 'package:my_workout_diary_app/page_home.dart';
 import 'package:my_workout_diary_app/route.dart';
@@ -23,14 +24,18 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: lightColorScheme,
-        ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: darkColorScheme,
-        ),
-        themeMode: ThemeMode.system,
+            primaryColor: Colors.white,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            accentColor: DSColors.tomato,
+            appBarTheme: AppBarTheme(
+              color: DSColors.white,
+              foregroundColor: DSColors.black,
+              elevation: 0,
+            ),
+            bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: Colors.white,
+            ),
+            scaffoldBackgroundColor: Colors.white),
         onGenerateRoute: Routers.generateRoute,
         debugShowCheckedModeBanner: false,
         home: const PageHome(),

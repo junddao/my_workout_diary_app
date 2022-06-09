@@ -13,40 +13,42 @@ class WidgetRestTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         context.read<WorkoutProvider>().setItemType(ItemType.rest);
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: const [
-            BoxShadow(color: Colors.grey, offset: Offset(3, 3), blurRadius: 5),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.pause_circle, color: DSColors.tomato),
-                SizedBox(
-                  width: 8,
-                ),
-                Text('휴식시간', style: DSTextStyles.regular18black),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              DataConvert.intToTimeLeft(context.watch<WorkoutProvider>().restTime.toInt()),
-              style: DSTextStyles.bold18Tomato,
-            ),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+            boxShadow: const [
+              BoxShadow(color: Colors.grey, offset: Offset(3, 3), blurRadius: 5),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.pause_circle, color: DSColors.facebook_blue),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text('휴식시간', style: DSTextStyles.regular18black),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                DataConvert.intToTimeLeft(context.watch<WorkoutProvider>().restTime.toInt()),
+                style: DSTextStyles.bold18FacebookBlue,
+              ),
+            ],
+          ),
         ),
       ),
     );
