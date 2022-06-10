@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:audio_session/audio_session.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -8,6 +12,7 @@ import 'package:my_workout_diary_app/global/enum/countdown_type.dart';
 import 'package:my_workout_diary_app/global/enum/item_type.dart';
 import 'package:my_workout_diary_app/global/enum/working_type.dart';
 import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/service/audio_service.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
@@ -44,8 +49,15 @@ class _PagePlayViewState extends State<PagePlayView> {
   bool isStarted = false;
   bool isWorkout = false;
   late WorkoutProvider workoutProvider;
+  late Timer _timer;
+  int _time = 0;
+  bool _isRunning = false;
 
-  final player = AudioPlayer();
+  // final player = AudioPlayer(
+  //   handleInterruptions: false,
+  //   androidApplyAudioAttributes: false,
+  //   handleAudioSessionActivation: false,
+  // );
 
   CountDownController workoutCountdownController = CountDownController();
   CountDownController restCountdownController = CountDownController();
@@ -57,6 +69,12 @@ class _PagePlayViewState extends State<PagePlayView> {
       workoutProvider.setWorkingType(WorkingType.ready);
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -81,9 +99,11 @@ class _PagePlayViewState extends State<PagePlayView> {
         } else if (workoutProvider.countdownType == CountdownType.started) {
           workoutProvider.setCountdownType(CountdownType.paused);
           workoutCountdownController.pause();
+          _pause();
         } else if (workoutProvider.countdownType == CountdownType.paused) {
           workoutProvider.setCountdownType(CountdownType.started);
           workoutCountdownController.resume();
+          _start(getDuration());
         }
       },
       child: Container(
@@ -259,23 +279,22 @@ class _PagePlayViewState extends State<PagePlayView> {
 
       onStart: () {
         debugPrint('Countdown Started');
-        int duration = 5;
-        if (workoutProvider.workingType == WorkingType.rest) {
-          duration = workoutProvider.restTime.toInt();
-        }
-        if (workoutProvider.workingType == WorkingType.workout) {
-          duration = workoutProvider.workoutTime.toInt();
-        }
-        Future.delayed(
-          Duration(seconds: duration - 4),
-          () async {
-            var duration = await player.setAsset('assets/audios/countdown.wav');
-            player.play();
-          },
-        );
+        int duration = getDuration();
+
+        _start(duration);
+
+        // Future.delayed(
+        //   Duration(seconds: duration - 4),
+        //   () async {
+        //     // var duration = await player.setAsset('assets/audios/countdown.wav');
+        //     await AudioService().start();
+        //   },
+        // );
       },
       onComplete: () {
-        player.pause();
+        _reset();
+        // Future.microtask(() async => await AudioService().stop());
+
         if (workoutProvider.workingType == WorkingType.rest) {
           workoutProvider.setWorkingType(WorkingType.workout);
         } else if (workoutProvider.workingType == WorkingType.workout) {
@@ -301,5 +320,38 @@ class _PagePlayViewState extends State<PagePlayView> {
         }
       },
     );
+  }
+
+  void _start(int beepTime) {
+    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) async {
+      _time++;
+      if (beepTime - 4 == _time / 100) {
+        await AudioService().start();
+      }
+    });
+  }
+
+  // 타이머 취소
+  void _pause() {
+    _timer.cancel();
+  }
+
+  void _reset() async {
+    _isRunning = false;
+    _timer.cancel();
+    _time = 0;
+    await AudioService().stop();
+  }
+
+  int getDuration() {
+    int duration = 5;
+    if (workoutProvider.workingType == WorkingType.rest) {
+      duration = workoutProvider.restTime.toInt();
+    }
+    if (workoutProvider.workingType == WorkingType.workout) {
+      duration = workoutProvider.workoutTime.toInt();
+    }
+
+    return duration;
   }
 }
