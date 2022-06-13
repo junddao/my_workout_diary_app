@@ -1,4 +1,4 @@
-package com.example.my_workout_diary_app
+package com.jtb.workoutdiary
 
 import io.flutter.embedding.android.FlutterActivity
 

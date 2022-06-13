@@ -1,6 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
+import 'package:my_workout_diary_app/firebase_options.dart';
+import 'package:my_workout_diary_app/global/provider/kakao_login_provider.dart';
 import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/service/social_login.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/lib_color_schemes.g.dart';
 import 'package:my_workout_diary_app/page_home.dart';
@@ -8,7 +13,16 @@ import 'package:my_workout_diary_app/route.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+  initializeDateFormatting().then((_) async {
+    kakao.KakaoSdk.init(
+      nativeAppKey: '0ce0a45061c3064eba6d0e8d1f960317',
+    );
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -20,6 +34,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => WorkoutProvider()),
+        ChangeNotifierProvider(create: (_) => KakaoLoginProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

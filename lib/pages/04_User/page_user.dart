@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_workout_diary_app/global/provider/kakao_login_provider.dart';
+import 'package:provider/provider.dart';
 
 class PageUser extends StatefulWidget {
   const PageUser({Key? key}) : super(key: key);
@@ -38,5 +40,13 @@ class _PageUserViewState extends State<PageUserView> {
     );
   }
 
-  _body() {}
+  _body() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Text('${context.read<KakaoLoginProvider>().user!.kakaoAccount!.email}'),
+        ],
+      ),
+    );
+  }
 }

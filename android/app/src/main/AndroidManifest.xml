@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.my_workout_diary_app">
+    package="com.jtb.workoutdiary">
    <application
         android:label="my_workout_diary_app"
         android:name="${applicationName}"
@@ -23,6 +23,16 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity">
+            <intent-filter android:label="flutter_web_auth">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI, "kakao${YOUR_NATIVE_APP_KEY}://oauth" 형식 -->
+                <data android:scheme="kakao0ce0a45061c3064eba6d0e8d1f960317" android:host="oauth"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
