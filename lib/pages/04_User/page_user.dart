@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_workout_diary_app/global/provider/kakao_login_provider.dart';
+import 'package:my_workout_diary_app/global/provider/login_provider.dart';
 import 'package:provider/provider.dart';
 
 class PageUser extends StatefulWidget {
@@ -44,7 +44,7 @@ class _PageUserViewState extends State<PageUserView> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Text('${context.read<KakaoLoginProvider>().user!.kakaoAccount!.email}'),
+          Text(context.read<LoginProvider>().user.email),
         ],
       ),
     );

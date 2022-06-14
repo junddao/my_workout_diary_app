@@ -5,7 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
-import 'package:my_workout_diary_app/global/provider/kakao_login_provider.dart';
+import 'package:my_workout_diary_app/global/provider/login_provider.dart';
 import 'package:my_workout_diary_app/global/service/kakao_login.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
@@ -46,45 +46,46 @@ class _PageLoginViewState extends State<PageLoginView> {
 
   Widget _body() {
     return Center(
-      child: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
-            }
-            return Column(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Expanded(
+            flex: 5,
+            child: Center(
+              child: Text('마이 헬스 다이어리', style: DSTextStyles.bold24Grey06),
+            ),
+          ),
+          Expanded(
+            flex: 5,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Expanded(
-                  flex: 5,
-                  child: Center(
-                    child: Text('마이 헬스 다이어리', style: DSTextStyles.bold24Grey06),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildKakaoLogin(),
-                      Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
-                      Platform.isIOS ? _buildAppleLogin() : const SizedBox.shrink(),
-                      const SizedBox(height: 40.0),
-                      _buildGuestLogin(),
-                    ],
-                  ),
-                ),
+                _buildKakaoLogin(),
+                Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
+                Platform.isIOS ? _buildAppleLogin() : const SizedBox.shrink(),
+                const SizedBox(height: 40.0),
+                _buildGuestLogin(),
               ],
-            );
-          }),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   _buildAppleLogin() {
     Size size = MediaQuery.of(context).size;
     return InkWell(
-      onTap: () async {},
+      onTap: () async {
+        bool result = await context.read<LoginProvider>().appleLogin();
+
+        if (result == true) {
+          Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('로그인 실패')));
+        }
+      },
       child: Container(
         width: size.width - 40,
         height: 50,
@@ -116,7 +117,7 @@ class _PageLoginViewState extends State<PageLoginView> {
     Size size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () async {
-        bool result = await context.read<KakaoLoginProvider>().login();
+        bool result = await context.read<LoginProvider>().kakaoLogin();
 
         if (result == true) {
           Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);

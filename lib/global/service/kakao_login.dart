@@ -1,7 +1,6 @@
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:my_workout_diary_app/global/service/social_login.dart';
 
-class KakaoLogin implements SocialLogin {
+class KakaoLogin {
   @override
   Future<bool> login() async {
     try {
