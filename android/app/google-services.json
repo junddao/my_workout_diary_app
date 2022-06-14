@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "172823455625",
+    "project_id": "my-workout-diary-d1093",
+    "storage_bucket": "my-workout-diary-d1093.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172823455625:android:dd4b0a32134f006e576358",
+        "android_client_info": {
+          "package_name": "com.jtb.workoutdiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172823455625-pnp602lk88nld1pug8clva4ndbe86luh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCLO65GSI1ReNmT4fjNKCt2wmilZh5ww8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172823455625-pnp602lk88nld1pug8clva4ndbe86luh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "172823455625-a6lofrouoek1rt95ul0hhrpre94h1ioa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jtb.workoutdiary"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
