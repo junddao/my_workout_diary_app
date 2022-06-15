@@ -40,6 +40,9 @@ class _PageHomeViewState extends State<PageHomeView> {
     if (myToken == '') {
       // 토큰 가져오는 api 호출
       Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+    } else {
+      // 토큰 가져오는 api 호출
+      Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
     }
   }
 
