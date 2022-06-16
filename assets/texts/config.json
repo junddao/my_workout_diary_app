@@ -1,0 +1,11 @@
+{
+  "api_project_name": "my_workout_diary_app",
+  "server_current_type": "dev",
+  "server_info": [
+    {
+      "type": "dev",
+      "base_url": "http://localhost:3000",
+      "websocket_server": ""
+    }
+  ]
+}

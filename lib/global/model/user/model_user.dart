@@ -5,50 +5,57 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:my_workout_diary_app/global/enum/socail_type.dart';
 
 class ModelUser {
-  String email;
-  String nickname;
+  String? id;
+  String? email;
+  String? name;
   String? introduce;
   String? profileImage;
 
-  String socialType;
-  //  String status (signed, active, left)
-  //  String pushEnabled
+  String? social;
+  bool? pushEnabled;
+  String? createdAt;
+  String? updatedAt;
   //  String smsEnabled
   //  String agreeTerms
   //  String phoneNumber
-  DateTime? createdAt;
-  DateTime? updatedAt;
+
   ModelUser({
-    required this.email,
-    required this.nickname,
+    this.id,
+    this.email,
+    this.name,
     this.introduce,
     this.profileImage,
-    required this.socialType,
+    this.social,
+    this.pushEnabled,
     this.createdAt,
     this.updatedAt,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      '_id': id,
       'email': email,
-      'nickname': nickname,
+      'name': name,
       'introduce': introduce,
       'profileImage': profileImage,
-      'socialType': socialType,
-      'createdAt': createdAt?.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
+      'social': social,
+      'pushEnabled': pushEnabled,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
   factory ModelUser.fromMap(Map<String, dynamic> map) {
     return ModelUser(
+      id: map['_id'],
       email: map['email'],
-      nickname: map['nickname'],
+      name: map['name'],
       introduce: map['introduce'] != null ? map['introduce'] : null,
       profileImage: map['profileImage'] != null ? map['profileImage'] : null,
-      socialType: map['socialType'],
-      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']).toLocal() : null,
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']).toLocal() : null,
+      social: map['social'],
+      pushEnabled: map['pushEnabled'] != null ? map['pushEnabled'] : null,
+      createdAt: map['createdAt'] != null ? map['createdAt'] : null,
+      updatedAt: map['updatedAt'] != null ? map['updatedAt'] : null,
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/enum/item_type.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,7 @@ class WidgetInterval extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<WorkoutProvider>().setItemType(ItemType.interval);
+        context.read<TimerProvider>().setItemType(ItemType.interval);
       },
       child: Padding(
         padding: const EdgeInsets.all(5),
@@ -41,7 +41,7 @@ class WidgetInterval extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                '${context.watch<WorkoutProvider>().interval.toInt()}X',
+                '${context.watch<TimerProvider>().interval.toInt()}X',
                 style: DSTextStyles.bold18NaverGreen,
               ),
             ],

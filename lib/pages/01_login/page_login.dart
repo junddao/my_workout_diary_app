@@ -4,15 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
 import 'package:my_workout_diary_app/global/provider/login_provider.dart';
-import 'package:my_workout_diary_app/global/service/kakao_login.dart';
+import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
-import 'package:my_workout_diary_app/global/util/util.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class PageLogin extends StatefulWidget {
   const PageLogin({Key? key}) : super(key: key);
@@ -118,11 +114,30 @@ class _PageLoginViewState extends State<PageLoginView> {
     return InkWell(
       onTap: () async {
         bool result = await context.read<LoginProvider>().kakaoLogin();
+        if (!result) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('로그인을 실패했어요. 다시 시도해 주세요.'),
+            ),
+          );
+          return;
+        }
+
+        result = await context.read<UserProvider>().getMe();
+        if (!result) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('유저 정보를 가져오지 못했습니다. 다시 시도해 주세요.'),
+            ),
+          );
+          return;
+        }
 
         if (result == true) {
           Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('로그인 실패')));
+          return;
         }
       },
       child: Container(

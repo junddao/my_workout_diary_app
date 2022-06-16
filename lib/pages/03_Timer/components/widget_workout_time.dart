@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/enum/item_type.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:my_workout_diary_app/global/util/data_converter.dart';
@@ -13,7 +13,7 @@ class WidgetWorkoutTime extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<WorkoutProvider>().setItemType(ItemType.workout);
+        context.read<TimerProvider>().setItemType(ItemType.workout);
       },
       child: Padding(
         padding: const EdgeInsets.all(5),
@@ -42,7 +42,7 @@ class WidgetWorkoutTime extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                DataConvert.intToTimeLeft(context.watch<WorkoutProvider>().workoutTime.toInt()),
+                DataConvert.intToTimeLeft(context.watch<TimerProvider>().workoutTime.toInt()),
                 style: DSTextStyles.bold18Tomato,
               ),
             ],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_workout_diary_app/global/model/user/model_user.dart';
 import 'package:my_workout_diary_app/global/provider/login_provider.dart';
+import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class PageUser extends StatefulWidget {
@@ -44,7 +46,7 @@ class _PageUserViewState extends State<PageUserView> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Text(context.read<LoginProvider>().user.email),
+          Text(context.watch<UserProvider>().me.email ?? ''),
         ],
       ),
     );

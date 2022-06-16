@@ -44,7 +44,7 @@ class ApiService {
     try {
       final token = await _getAuthorizationToken();
       print(token);
-      _headers['dnss-token'] = '$token';
+      _headers['Authorization'] = 'Bearer $token';
       print('${ModelConfig().serverBaseUrl}');
       response = await Dio()
           .get('${ModelConfig().serverBaseUrl}$_path',
@@ -64,14 +64,14 @@ class ApiService {
     return response?.data;
   }
 
-  Future<dynamic> post(String _path, Map map) async {
+  Future<dynamic> post(String _path, Map? map) async {
     print('Api get : url $_path start.');
 
     var response;
     try {
       final token = await _getAuthorizationToken();
       print(token);
-      _headers['dnss-token'] = '$token';
+      _headers['Authorization'] = 'Bearer $token';
 
       var _data = jsonEncode(map);
 
@@ -137,7 +137,7 @@ class ApiService {
     print('${ModelConfig().serverBaseUrl}');
     var response;
     try {
-      _multiPartHeaders['dnss-token'] = '$token';
+      _multiPartHeaders['Authorization'] = 'Bearer $token';
       var _formData = FormData();
       for (int i = 0; i < _files.length; i++) {
         _formData.files.add(

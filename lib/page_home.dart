@@ -15,7 +15,7 @@ class _PageHomeState extends State<PageHome> {
   int currentPageIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return const PageHomeView();
+    return PageHomeView();
   }
 }
 
@@ -55,6 +55,6 @@ class _PageHomeViewState extends State<PageHomeView> {
   }
 
   Widget _body() {
-    return const PageTabs();
+    return PageTabs();
   }
 }

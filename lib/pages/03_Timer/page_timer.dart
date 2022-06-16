@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_workout_diary_app/global/enum/item_type.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
@@ -99,7 +99,7 @@ class _PageTimerViewState extends State<PageTimerView> {
 
   Widget settingWidget() {
     Widget widget;
-    ItemType item = context.watch<WorkoutProvider>().selectedType;
+    ItemType item = context.watch<TimerProvider>().selectedType;
     switch (item) {
       case ItemType.workout:
         widget = const WidgetSetWorkoutTime();
