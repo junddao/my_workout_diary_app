@@ -4,6 +4,8 @@ import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 const String test_image_url =
     'https://upload.wikimedia.org/wikipedia/commons/5/5f/%ED%95%9C%EA%B3%A0%EC%9D%80%2C_%EB%AF%B8%EC%86%8C%EA%B0%80_%EC%95%84%EB%A6%84%EB%8B%A4%EC%9B%8C~_%281%29.jpg';
 
+const String defaultUser = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+
 const String APP_NAME = "마이 헬스 다이어리";
 
 const kPrimaryColor = DSColors.tomato;

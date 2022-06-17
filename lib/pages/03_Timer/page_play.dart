@@ -282,18 +282,9 @@ class _PagePlayViewState extends State<PagePlayView> {
         int duration = getDuration();
 
         _start(duration);
-
-        // Future.delayed(
-        //   Duration(seconds: duration - 4),
-        //   () async {
-        //     // var duration = await player.setAsset('assets/audios/countdown.wav');
-        //     await AudioService().start();
-        //   },
-        // );
       },
       onComplete: () {
         _reset();
-        // Future.microtask(() async => await AudioService().stop());
 
         if (workoutProvider.workingType == WorkingType.rest) {
           workoutProvider.setWorkingType(WorkingType.workout);

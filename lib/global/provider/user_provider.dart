@@ -8,7 +8,7 @@ class UserProvider extends ParentProvider {
   Future<bool> getMe() async {
     try {
       setStateBusy();
-      const String path = '/auth/me';
+      const String path = '/user/me';
       Map<String, dynamic> response = await ApiService().get(path);
       me = ModelUser.fromMap(response);
       setStateIdle();

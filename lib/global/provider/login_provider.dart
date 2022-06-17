@@ -70,16 +70,16 @@ class LoginProvider extends ParentProvider {
   }
 
   Future<String> createCustomToken(Map<String, dynamic> user) async {
-    const String url = '/auth/kakao';
+    const String url = '/user/kakao';
     final customTokenResponse = await ApiService().postWithOutToken(url, user);
 
-    return customTokenResponse['token'];
+    return customTokenResponse['fbCustomToken'];
   }
 
   Future<bool> signIn(String email) async {
     try {
       ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email);
-      const String url = '/auth/signin';
+      const String url = '/user/signin';
       Map<String, dynamic> _data = await ApiService().postWithOutToken(url, modelRequestSignIn.toMap());
       ModelResponseSignIn modelResponseSignIn = ModelResponseSignIn.fromMap(_data);
       await ModelSharedPreferences.writeToken(modelResponseSignIn.accessToken);

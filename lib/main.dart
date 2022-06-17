@@ -10,6 +10,7 @@ import 'package:my_workout_diary_app/global/model/model_config.dart';
 import 'package:my_workout_diary_app/global/provider/login_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
+import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/page_home.dart';
 import 'package:my_workout_diary_app/route.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TimerProvider()),
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => WorkoutProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

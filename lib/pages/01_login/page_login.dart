@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_workout_diary_app/global/provider/login_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
+import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:provider/provider.dart';
@@ -110,7 +111,6 @@ class _PageLoginViewState extends State<PageLoginView> {
   }
 
   _buildKakaoLogin() {
-    Size size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () async {
         bool result = await context.read<LoginProvider>().kakaoLogin();
@@ -141,7 +141,7 @@ class _PageLoginViewState extends State<PageLoginView> {
         }
       },
       child: Container(
-        width: size.width - 40,
+        width: SizeConfig.screenWidth - 40,
         height: 50,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),

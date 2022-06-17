@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/service/timer_service.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
@@ -8,6 +10,8 @@ import 'package:my_workout_diary_app/pages/02_record/page_record.dart';
 import 'package:my_workout_diary_app/pages/03_Timer/page_timer.dart';
 import 'package:my_workout_diary_app/pages/04_best_user/page_best_user.dart';
 import 'package:my_workout_diary_app/pages/05_User/page_user.dart';
+import 'package:provider/provider.dart';
+import 'package:my_workout_diary_app/global/util/extension/string.dart';
 
 class PageTabs extends StatefulWidget {
   const PageTabs({Key? key}) : super(key: key);
@@ -43,6 +47,7 @@ class _PageTabViewState extends State<PageTabView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _body(),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
@@ -51,13 +56,26 @@ class _PageTabViewState extends State<PageTabView> {
         ),
         child: _bottomNavigationBar(),
       ),
-      floatingActionButton: CircleAvatar(
-        radius: 30,
-        backgroundColor: DSColors.tomato,
-        child: Text('운동시작', style: DSTextStyles.bold10White),
-      ),
+      floatingActionButton: _floatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  Widget _floatingActionButton() {
+    return Consumer<WorkoutProvider>(builder: (_, value, __) {
+      return InkWell(
+        onTap: () {
+          value.isStart ? value.stop() : value.start();
+        },
+        child: CircleAvatar(
+          radius: 40,
+          backgroundColor: DSColors.tomato,
+          child: value.time == 0
+              ? Text('시작?', style: DSTextStyles.bold10White)
+              : Text('${value.time}'.toTimeWithMinSec(), style: DSTextStyles.bold10White),
+        ),
+      );
+    });
   }
 
   Widget _body() {

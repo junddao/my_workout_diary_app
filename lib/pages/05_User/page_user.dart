@@ -1,7 +1,15 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
 import 'package:my_workout_diary_app/global/provider/login_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
+import 'package:my_workout_diary_app/global/style/constants.dart';
+import 'package:my_workout_diary_app/global/style/ds_colors.dart';
+import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:provider/provider.dart';
 
 class PageUser extends StatefulWidget {
@@ -26,6 +34,15 @@ class PageUserView extends StatefulWidget {
 }
 
 class _PageUserViewState extends State<PageUserView> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _tecName = TextEditingController();
+
+  @override
+  void dispose() {
+    _tecName.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,13 +59,119 @@ class _PageUserViewState extends State<PageUserView> {
     );
   }
 
-  _body() {
+  Widget _body() {
+    final FocusScopeNode node = FocusScope.of(context);
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Text(context.watch<UserProvider>().me.email ?? ''),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () async {},
+                    child: Container(
+                      height: 80,
+                      width: 80,
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(300),
+                              child: CachedNetworkImage(
+                                imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
+                                fit: BoxFit.cover,
+                                height: 80,
+                                width: 80,
+                              )),
+                          Positioned(
+                            top: 60,
+                            left: 60,
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 20,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                  color: DSColors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(width: 1, color: DSColors.grey_06)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.camera_alt,
+                                    color: DSColors.grey_06,
+                                    size: 16,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 18),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(text: '안녕하세요\n', style: DSTextStyles.bold18WarmGrey),
+                            TextSpan(text: '${context.watch<UserProvider>().me.name}', style: DSTextStyles.bold18Black),
+                            TextSpan(text: '님!', style: DSTextStyles.bold18WarmGrey),
+                          ],
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 20),
+                      Text(context.watch<UserProvider>().me.email!),
+                    ],
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20),
+              Text('이름 수정하기', style: DSTextStyles.bold18Black),
+              DSInputField(
+                controller: _tecName,
+                hintText: "변경하실 성명을 입력해주세요",
+                warningMessage: "성명을 입력해주세요",
+                onEditingComplete: () => node.nextFocus(),
+                validator: (value) {
+                  if (value!.length > 10) {
+                    return "10자 내로 입력해주세요.";
+                  }
+                },
+              ),
+
+              // DSInputField(
+              //   controller: _tecPhone,
+              //   title: "연락처:",
+              //   hintText: "거래처와의 연락 및 고객지원을 위해 사용됩니다.",
+              //   warningMessage: "연락처를 입력해주세요",
+              //   keyboardType: TextInputType.phone,
+              //   inputFormatters: [TextInputFormatterPhone()],
+              // ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
       ),
     );
   }
+
+  // _body() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       children: [
+  //         Text(context.watch<UserProvider>().me.email ?? ''),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

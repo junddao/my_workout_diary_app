@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
+import 'package:my_workout_diary_app/global/provider/login_provider.dart';
+import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/page_tabs.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PageHome extends StatefulWidget {
@@ -41,8 +44,15 @@ class _PageHomeViewState extends State<PageHomeView> {
       // 토큰 가져오는 api 호출
       Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
     } else {
-      // 토큰 가져오는 api 호출
-      Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+      bool result = await context.read<UserProvider>().getMe();
+      if (result == false) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('유저 정보를 가져오지 못했습니다.'),
+          ),
+        );
+        Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+      }
     }
   }
 
