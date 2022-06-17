@@ -50,7 +50,7 @@ class LoginProvider extends ParentProvider {
       logger.d('get firebase user error');
     }
     // firebase 유저 가져와서 서버에 로그인 합시다.
-    result = await signIn(fbUser!.uid);
+    result = await signIn(fbUser!.email!);
     if (result == false) {
       return false;
     }
@@ -76,9 +76,9 @@ class LoginProvider extends ParentProvider {
     return customTokenResponse['token'];
   }
 
-  Future<bool> signIn(String fbUid) async {
+  Future<bool> signIn(String email) async {
     try {
-      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(fbUid: fbUid);
+      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email);
       const String url = '/auth/signin';
       Map<String, dynamic> _data = await ApiService().postWithOutToken(url, modelRequestSignIn.toMap());
       ModelResponseSignIn modelResponseSignIn = ModelResponseSignIn.fromMap(_data);

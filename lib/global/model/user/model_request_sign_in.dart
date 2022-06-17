@@ -1,20 +1,20 @@
 import 'dart:convert';
 
 class ModelRequestSignIn {
-  String fbUid;
+  String email;
   ModelRequestSignIn({
-    required this.fbUid,
+    required this.email,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'fbUid': fbUid,
+      'email': email,
     };
   }
 
   factory ModelRequestSignIn.fromMap(Map<String, dynamic> map) {
     return ModelRequestSignIn(
-      fbUid: map['fbUid'],
+      email: map['email'],
     );
   }
 
