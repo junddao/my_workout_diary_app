@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_workout_diary_app/global/enum/view_state.dart';
 import 'package:my_workout_diary_app/global/provider/login_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
@@ -42,33 +43,40 @@ class _PageLoginViewState extends State<PageLoginView> {
   }
 
   Widget _body() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Expanded(
-            flex: 5,
-            child: Center(
-              child: Text('마이 헬스 다이어리', style: DSTextStyles.bold24Grey06),
+    return Consumer<LoginProvider>(builder: (_, watch, __) {
+      if (watch.state == ViewState.Busy) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Expanded(
+              flex: 5,
+              child: Center(
+                child: Text('마이 헬스 다이어리', style: DSTextStyles.bold24Grey06),
+              ),
             ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildKakaoLogin(),
-                Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
-                Platform.isIOS ? _buildAppleLogin() : const SizedBox.shrink(),
-                const SizedBox(height: 40.0),
-                _buildGuestLogin(),
-              ],
+            Expanded(
+              flex: 5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildKakaoLogin(),
+                  Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
+                  Platform.isIOS ? _buildAppleLogin() : const SizedBox.shrink(),
+                  const SizedBox(height: 40.0),
+                  _buildGuestLogin(),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   _buildAppleLogin() {

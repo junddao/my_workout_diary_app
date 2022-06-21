@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
 import 'package:my_workout_diary_app/global/provider/login_provider.dart';
@@ -56,6 +57,17 @@ class _PageUserViewState extends State<PageUserView> {
       title: const Text('마이'),
       centerTitle: false,
       automaticallyImplyLeading: false,
+      actions: [
+        TextButton(
+          onPressed: () {
+            // onSave();
+          },
+          child: Text(
+            '등록하기',
+            style: DSTextStyles.bold14Tomato,
+          ),
+        ),
+      ],
     );
   }
 
@@ -134,7 +146,6 @@ class _PageUserViewState extends State<PageUserView> {
                   ),
                 ],
               ),
-
               SizedBox(height: 20),
               Text('이름 수정하기', style: DSTextStyles.bold18Black),
               DSInputField(
@@ -148,21 +159,33 @@ class _PageUserViewState extends State<PageUserView> {
                   }
                 },
               ),
-
-              // DSInputField(
-              //   controller: _tecPhone,
-              //   title: "연락처:",
-              //   hintText: "거래처와의 연락 및 고객지원을 위해 사용됩니다.",
-              //   warningMessage: "연락처를 입력해주세요",
-              //   keyboardType: TextInputType.phone,
-              //   inputFormatters: [TextInputFormatterPhone()],
-              // ),
+              const SizedBox(height: 40),
+              DSButton(
+                  text: '로그아웃',
+                  press: () {
+                    _logout();
+                  },
+                  type: ButtonType.warning,
+                  width: SizeConfig.screenWidth),
               const SizedBox(height: 24),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _logout() async {
+    bool result = await context.read<LoginProvider>().signOut();
+    if (result) {
+      Navigator.of(context).pushNamed('PageLogin');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('로그아웃을 실패했습니다. 다시 시도해주세요.'),
+        ),
+      );
+    }
   }
 
   // _body() {

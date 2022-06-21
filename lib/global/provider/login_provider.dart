@@ -60,15 +60,6 @@ class LoginProvider extends ParentProvider {
     return true;
   }
 
-  Future<void> kakaoLogout() async {
-    setStateBusy();
-    await _kakaoLogin.logout();
-    await FirebaseAuth.instance.signOut();
-    isLoggedIn = false;
-
-    setStateIdle();
-  }
-
   Future<String> createCustomToken(Map<String, dynamic> user) async {
     const String url = '/user/kakao';
     final customTokenResponse = await ApiService().postWithOutToken(url, user);
@@ -104,6 +95,30 @@ class LoginProvider extends ParentProvider {
       }
 
       logger.d('kakao sign in success');
+      setStateIdle();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> appleLogout() async {
+    setStateBusy();
+    await FirebaseAuth.instance.signOut();
+    isLoggedIn = false;
+
+    setStateIdle();
+  }
+
+  Future<bool> signOut() async {
+    setStateBusy();
+    try {
+      setStateBusy();
+      await FirebaseAuth.instance.signOut();
+      await _kakaoLogin.logout();
+
+      isLoggedIn = false;
+
       setStateIdle();
       return true;
     } catch (e) {
