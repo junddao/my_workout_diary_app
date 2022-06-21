@@ -62,7 +62,15 @@ dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.3
 
+# flutter_launcher_icons 설정값 변경 후 컴파일 명령어 입력
+# 아래는 컴파일 명령
+# flutter pub run flutter_launcher_icons:main
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo/icon.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
@@ -72,7 +80,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    # - assets/icons/
+    - assets/logo/
     - assets/texts/
     - assets/images/
     - assets/audios/
