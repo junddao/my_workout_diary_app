@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
@@ -13,7 +14,7 @@ class PageRecordCondition extends StatefulWidget {
 }
 
 class _PageRecordConditionState extends State<PageRecordCondition> {
-  double score = 1;
+  ValueNotifier<double> score = ValueNotifier(3);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +40,42 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset('assets/icons/ic_check.png'),
+            ValueListenableBuilder<double>(
+                valueListenable: score,
+                builder: (context, value, child) {
+                  switch (value.toInt() - 1) {
+                    case 0:
+                      return Icon(
+                        Icons.sentiment_very_dissatisfied,
+                        color: Colors.red,
+                        size: (SizeConfig.screenWidth - 150) / 3,
+                      );
+                    case 1:
+                      return Icon(
+                        Icons.sentiment_dissatisfied,
+                        color: Colors.redAccent,
+                        size: (SizeConfig.screenWidth - 150) / 3,
+                      );
+                    case 2:
+                      return Icon(
+                        Icons.sentiment_neutral,
+                        color: Colors.amber,
+                        size: (SizeConfig.screenWidth - 150) / 3,
+                      );
+                    case 3:
+                      return Icon(
+                        Icons.sentiment_satisfied,
+                        color: Colors.lightGreen,
+                        size: (SizeConfig.screenWidth - 150) / 3,
+                      );
+                    default:
+                      return Icon(
+                        Icons.sentiment_very_satisfied,
+                        color: Colors.green,
+                        size: (SizeConfig.screenWidth - 150) / 3,
+                      );
+                  }
+                }),
             SizedBox(
               height: 24,
             ),
@@ -62,22 +98,48 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
 
   Widget ratingWidget() {
     return RatingBar.builder(
-      initialRating: score,
+      initialRating: score.value,
       minRating: 1,
       direction: Axis.horizontal,
-      allowHalfRating: true,
+      allowHalfRating: false,
       unratedColor: DSColors.blue03.withAlpha(50),
       itemCount: 5,
       itemSize: (SizeConfig.screenWidth - 150) / 5,
       itemPadding: EdgeInsets.symmetric(horizontal: 10.0),
-      itemBuilder: (context, _) => Icon(
-        Icons.star,
-        color: DSColors.blue03,
-      ),
+      itemBuilder: (context, _) {
+        switch (_) {
+          case 0:
+            return Icon(
+              Icons.sentiment_very_dissatisfied,
+              color: Colors.red,
+            );
+          case 1:
+            return Icon(
+              Icons.sentiment_dissatisfied,
+              color: Colors.redAccent,
+            );
+          case 2:
+            return Icon(
+              Icons.sentiment_neutral,
+              color: Colors.amber,
+            );
+          case 3:
+            return Icon(
+              Icons.sentiment_satisfied,
+              color: Colors.lightGreen,
+            );
+          default:
+            return Icon(
+              Icons.sentiment_very_satisfied,
+              color: Colors.green,
+            );
+        }
+      },
       onRatingUpdate: (rating) {
-        setState(() {
-          score = rating;
-        });
+        print('${score.value} $rating');
+        // setState(() {
+        score.value = rating;
+        // });
       },
       updateOnDrag: true,
     );
