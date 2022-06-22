@@ -1,6 +1,12 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/components/ds_calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+final kToday = DateTime.now();
+final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
+final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 
 class PageRecord extends StatefulWidget {
   const PageRecord({Key? key}) : super(key: key);
@@ -46,12 +52,20 @@ class _PageMainViewState extends State<PageMainView> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          ValueListenableBuilder<DateTime?>(
-            valueListenable: selectedDays,
-            builder: (context, value, child) {
-              return DSTableCalendar(selectedDay: value, focusedDay: kToday, onDaySelected: _onDaySelected);
-            },
-          ),
+          ValueListenableBuilder<List<Event>>(
+              valueListenable: selectedEvents,
+              builder: (context, value, _) {
+                return ValueListenableBuilder<DateTime?>(
+                  valueListenable: selectedDays,
+                  builder: (context, value, child) {
+                    return DSTableCalendar(
+                        selectedDay: value,
+                        focusedDay: kToday,
+                        onDaySelected: _onDaySelected,
+                        eventLoader: _getEventsForDay);
+                  },
+                );
+              }),
           const SizedBox(height: 8.0),
           SizedBox(
             height: 200,
@@ -85,14 +99,44 @@ class _PageMainViewState extends State<PageMainView> {
     );
   }
 
-  void _onDaySelected(DateTime selectedDay, DateTime focusTime) {
-    print("$selectedDay, $focusTime");
+  /// 특정 날짜를 선택했을 때, ValueNotifier에 값을 넣어 캘린더와 하단 리스트를 재 빌드 시킴
+  void _onDaySelected(DateTime selectedDay, DateTime _) {
     selectedDays.value = selectedDay;
     selectedEvents.value = _getEventsForDay(selectedDay);
   }
 }
 
+/// 선택한 날짜 값에 해당하는 Event 값을 꺼내옴
 List<Event> _getEventsForDay(DateTime day) {
   // Implementation example
   return kEvents[day] ?? [];
+}
+
+// test data
+final kEvents = LinkedHashMap<DateTime, List<Event>>(
+  equals: isSameDay,
+  hashCode: getHashCode,
+)..addAll(_kEventSource);
+
+final _kEventSource = Map.fromIterable(List.generate(50, (index) => index),
+    key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
+    value: (item) => List.generate(item % 4 + 1, (index) => Event('Event $item | ${index + 1}')))
+  ..addAll({
+    kToday: [
+      Event('Today\'s Event 1'),
+      Event('Today\'s Event 2'),
+    ],
+  });
+
+int getHashCode(DateTime key) {
+  return key.day * 1000000 + key.month * 10000 + key.year;
+}
+
+class Event {
+  final String title;
+
+  const Event(this.title);
+
+  @override
+  String toString() => title;
 }
