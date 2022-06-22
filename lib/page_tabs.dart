@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -68,7 +69,7 @@ class _PageTabViewState extends State<PageTabView> {
             ? Text('시작?', style: DSTextStyles.bold10White)
             : Text('${value.time}'.toTimeWithMinSec(), style: DSTextStyles.bold10White),
         onPressed: () {
-          value.isStart ? value.stop() : value.start();
+          value.isStart ? dialog(_, value) : value.start();
         },
         style: ElevatedButton.styleFrom(
           primary: DSColors.tomato,
@@ -128,6 +129,35 @@ class _PageTabViewState extends State<PageTabView> {
       unselectedItemColor: DSColors.black04,
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
+    );
+  }
+
+  dialog(BuildContext context, WorkoutProvider provider) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: CupertinoAlertDialog(
+            title: Text('앗!'),
+            content: Text('기록을 멈추시겠습니까?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  provider.stop();
+                  Navigator.pop(context);
+                },
+                child: Text('네'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('아니요'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
