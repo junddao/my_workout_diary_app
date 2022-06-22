@@ -63,16 +63,17 @@ class _PageTabViewState extends State<PageTabView> {
 
   Widget _floatingActionButton() {
     return Consumer<WorkoutProvider>(builder: (_, value, __) {
-      return InkWell(
-        onTap: () {
+      return ElevatedButton(
+        child: value.time == 0
+            ? Text('시작?', style: DSTextStyles.bold10White)
+            : Text('${value.time}'.toTimeWithMinSec(), style: DSTextStyles.bold10White),
+        onPressed: () {
           value.isStart ? value.stop() : value.start();
         },
-        child: CircleAvatar(
-          radius: 40,
-          backgroundColor: DSColors.tomato,
-          child: value.time == 0
-              ? Text('시작?', style: DSTextStyles.bold10White)
-              : Text('${value.time}'.toTimeWithMinSec(), style: DSTextStyles.bold10White),
+        style: ElevatedButton.styleFrom(
+          primary: DSColors.tomato,
+          minimumSize: const Size(60, 60),
+          shape: const CircleBorder(),
         ),
       );
     });
