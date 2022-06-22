@@ -43,7 +43,7 @@ class _PageMainViewState extends State<PageMainView> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          DUCalendar(
+          DSCalendar(
             singleSelect: true,
             onDaySelected: (dateTime) {
               debugPrint(dateTime.toString());
