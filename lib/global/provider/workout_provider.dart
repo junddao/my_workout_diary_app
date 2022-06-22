@@ -5,15 +5,15 @@ import 'package:my_workout_diary_app/global/bloc/parent_provider.dart';
 class WorkoutProvider extends ParentProvider {
   late Timer _timer;
 
-  int _time = 0;
+  double _time = 0;
   bool _isStart = false;
 
-  int get time => _time;
+  double get time => _time;
   bool get isStart => _isStart;
 
   void start() {
     _isStart = true;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+    _timer = Timer.periodic(Duration(milliseconds: 100), (timer) async {
       _time++;
       print(_time);
       notifyListeners();

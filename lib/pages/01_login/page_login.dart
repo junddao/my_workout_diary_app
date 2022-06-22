@@ -135,7 +135,7 @@ class _PageLoginViewState extends State<PageLoginView> {
         if (!result) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('유저 정보를 가져오지 못했습니다. 다시 시도해 주세요.'),
+              content: Text('유저 정보를 가져오지∞ 못했습니다. 다시 시도해 주세요.'),
             ),
           );
           return;

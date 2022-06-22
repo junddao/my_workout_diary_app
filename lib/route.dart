@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/page_tabs.dart';
 import 'package:my_workout_diary_app/pages/01_login/page_login.dart';
+import 'package:my_workout_diary_app/pages/02_record/page_record_condition.dart';
 import 'package:my_workout_diary_app/pages/03_Timer/page_play.dart';
 
 class Routers {
@@ -23,6 +24,11 @@ class Routers {
       case 'PagePlay':
         return CupertinoPageRoute(
           builder: (_) => PagePlay(),
+          settings: settings,
+        );
+      case 'PageRecordCondition':
+        return CupertinoPageRoute(
+          builder: (_) => PageRecordCondition(),
           settings: settings,
         );
 

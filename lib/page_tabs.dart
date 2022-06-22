@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
 import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
 import 'package:my_workout_diary_app/global/service/timer_service.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
@@ -65,14 +66,14 @@ class _PageTabViewState extends State<PageTabView> {
   Widget _floatingActionButton() {
     return Consumer<WorkoutProvider>(builder: (_, value, __) {
       return ElevatedButton(
-        child: value.time == 0
-            ? Text('시작?', style: DSTextStyles.bold10White)
-            : Text('${value.time}'.toTimeWithMinSec(), style: DSTextStyles.bold10White),
+        child: value.time != 0
+            ? Text('${value.time ~/ 10}'.toTimeWithMinSec(), style: DSTextStyles.bold10Black)
+            : Text('시작?', style: DSTextStyles.bold10White),
         onPressed: () {
           value.isStart ? dialog(_, value) : value.start();
         },
         style: ElevatedButton.styleFrom(
-          primary: DSColors.tomato,
+          primary: value.time == 0 ? DSColors.tomato : DSColors.kakao_yellow,
           minimumSize: const Size(60, 60),
           shape: const CircleBorder(),
         ),
@@ -132,32 +133,17 @@ class _PageTabViewState extends State<PageTabView> {
     );
   }
 
-  dialog(BuildContext context, WorkoutProvider provider) {
-    return showDialog(
+  dialog(BuildContext context, WorkoutProvider provider) async {
+    var result = await DSDialog.showTwoButtonDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: CupertinoAlertDialog(
-            title: Text('앗!'),
-            content: Text('기록을 멈추시겠습니까?'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  provider.stop();
-                  Navigator.pop(context);
-                },
-                child: Text('네'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('아니요'),
-              ),
-            ],
-          ),
-        );
-      },
+      title: '앗!',
+      subTitle: '기록을 멈추시겠습니까?',
+      btn1Text: '아니요,',
+      btn2Text: '네,',
     );
+    if (result == true) {
+      provider.stop();
+      Navigator.of(context).pushNamed('PageRecordCondition');
+    }
   }
 }
