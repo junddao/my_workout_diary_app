@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -63,16 +64,17 @@ class _PageTabViewState extends State<PageTabView> {
 
   Widget _floatingActionButton() {
     return Consumer<WorkoutProvider>(builder: (_, value, __) {
-      return InkWell(
-        onTap: () {
-          value.isStart ? value.stop() : value.start();
+      return ElevatedButton(
+        child: value.time == 0
+            ? Text('시작?', style: DSTextStyles.bold10White)
+            : Text('${value.time}'.toTimeWithMinSec(), style: DSTextStyles.bold10White),
+        onPressed: () {
+          value.isStart ? dialog(_, value) : value.start();
         },
-        child: CircleAvatar(
-          radius: 40,
-          backgroundColor: DSColors.tomato,
-          child: value.time == 0
-              ? Text('시작?', style: DSTextStyles.bold10White)
-              : Text('${value.time}'.toTimeWithMinSec(), style: DSTextStyles.bold10White),
+        style: ElevatedButton.styleFrom(
+          primary: DSColors.tomato,
+          minimumSize: const Size(60, 60),
+          shape: const CircleBorder(),
         ),
       );
     });
@@ -127,6 +129,35 @@ class _PageTabViewState extends State<PageTabView> {
       unselectedItemColor: DSColors.black04,
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
+    );
+  }
+
+  dialog(BuildContext context, WorkoutProvider provider) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: CupertinoAlertDialog(
+            title: Text('앗!'),
+            content: Text('기록을 멈추시겠습니까?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  provider.stop();
+                  Navigator.pop(context);
+                },
+                child: Text('네'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('아니요'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
