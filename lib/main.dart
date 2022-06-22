@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             primaryColor: Colors.white,
             visualDensity: VisualDensity.adaptivePlatformDensity,
-            accentColor: DSColors.tomato,
+            accentColor: DSColors.blue5,
             appBarTheme: AppBarTheme(
               color: DSColors.white,
               foregroundColor: DSColors.black,

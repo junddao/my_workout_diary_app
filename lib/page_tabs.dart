@@ -73,7 +73,7 @@ class _PageTabViewState extends State<PageTabView> {
           value.isStart ? dialog(_, value) : value.start();
         },
         style: ElevatedButton.styleFrom(
-          primary: value.time == 0 ? DSColors.tomato : DSColors.kakao_yellow,
+          primary: value.time == 0 ? DSColors.blue5 : DSColors.kakao_yellow,
           minimumSize: const Size(60, 60),
           shape: const CircleBorder(),
         ),
