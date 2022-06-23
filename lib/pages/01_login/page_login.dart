@@ -5,7 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_workout_diary_app/global/enum/view_state.dart';
-import 'package:my_workout_diary_app/global/provider/login_provider.dart';
+import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
@@ -43,7 +43,7 @@ class _PageLoginViewState extends State<PageLoginView> {
   }
 
   Widget _body() {
-    return Consumer<LoginProvider>(builder: (_, watch, __) {
+    return Consumer<AuthProvider>(builder: (_, watch, __) {
       if (watch.state == ViewState.Busy) {
         return Center(
           child: CircularProgressIndicator(),
@@ -83,7 +83,7 @@ class _PageLoginViewState extends State<PageLoginView> {
     Size size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () async {
-        bool result = await context.read<LoginProvider>().appleLogin();
+        bool result = await context.read<AuthProvider>().appleLogin();
 
         if (result == true) {
           Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
@@ -121,7 +121,7 @@ class _PageLoginViewState extends State<PageLoginView> {
   _buildKakaoLogin() {
     return InkWell(
       onTap: () async {
-        bool result = await context.read<LoginProvider>().kakaoLogin();
+        bool result = await context.read<AuthProvider>().kakaoLogin();
         if (!result) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
