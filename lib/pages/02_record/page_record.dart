@@ -3,14 +3,12 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/components/ds_calendar.dart';
 import 'package:my_workout_diary_app/global/enum/view_state.dart';
+import 'package:my_workout_diary_app/global/model/record/model_record.dart';
+import 'package:my_workout_diary_app/global/model/record/model_record_event.dart';
 import 'package:my_workout_diary_app/global/model/record/model_request_get_records.dart';
 import 'package:my_workout_diary_app/global/provider/record_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-final kToday = DateTime.now();
-final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
-final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 
 class PageRecord extends StatefulWidget {
   const PageRecord({Key? key}) : super(key: key);
@@ -27,11 +25,11 @@ class _PageRecordState extends State<PageRecord> {
       int year = DateTime.now().year;
       int month = DateTime.now().month;
       final startDate = DateTime(year, month, 1);
-      ModelRequestGetRecords reqeustGetRecords = ModelRequestGetRecords(
+      ModelRequestGetRecords requestGetRecords = ModelRequestGetRecords(
         startDate: startDate,
         endDate: DateTime.now(),
       );
-      await context.read<RecordProvider>().getRecords(reqeustGetRecords);
+      await context.read<RecordProvider>().getRecords(requestGetRecords);
     });
   }
 
@@ -48,9 +46,13 @@ class PageMainView extends StatefulWidget {
   State<PageMainView> createState() => _PageMainViewState();
 }
 
+final kToday = DateTime.now();
+
 class _PageMainViewState extends State<PageMainView> {
+  LinkedHashMap<DateTime, List<ModelRecord>>? kEvents;
+  ValueNotifier<List<ModelRecord>> selectedEvents = ValueNotifier([]);
   ValueNotifier<DateTime?> selectedDays = ValueNotifier(null);
-  ValueNotifier<List<Event>> selectedEvents = ValueNotifier(kEvents[kToday] ?? []);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,10 +74,11 @@ class _PageMainViewState extends State<PageMainView> {
       if (watch.state == ViewState.Busy) {
         return Center(child: CircularProgressIndicator());
       }
+      kEvents = watch.getEvents();
       return SingleChildScrollView(
         child: Column(
           children: [
-            ValueListenableBuilder<List<Event>>(
+            ValueListenableBuilder<List<ModelRecord>>(
                 valueListenable: selectedEvents,
                 builder: (context, value, _) {
                   return ValueListenableBuilder<DateTime?>(
@@ -83,7 +86,7 @@ class _PageMainViewState extends State<PageMainView> {
                     builder: (context, value, child) {
                       return DSTableCalendar(
                           selectedDay: value,
-                          focusedDay: kToday,
+                          focusedDay: DateTime.now(),
                           onDaySelected: _onDaySelected,
                           eventLoader: _getEventsForDay);
                     },
@@ -92,7 +95,7 @@ class _PageMainViewState extends State<PageMainView> {
             const SizedBox(height: 8.0),
             SizedBox(
               height: 200,
-              child: ValueListenableBuilder<List<Event>>(
+              child: ValueListenableBuilder<List<ModelRecord>>(
                 valueListenable: selectedEvents,
                 builder: (context, value, _) {
                   return ListView.builder(
@@ -108,8 +111,8 @@ class _PageMainViewState extends State<PageMainView> {
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: ListTile(
-                          onTap: () => print('${value[index]}'),
-                          title: Text('${value[index]}'),
+                          onTap: () => print('${value[index].workoutTime}'),
+                          title: Text('${value[index].workoutTime}'),
                         ),
                       );
                     },
@@ -126,42 +129,11 @@ class _PageMainViewState extends State<PageMainView> {
   /// 특정 날짜를 선택했을 때, ValueNotifier에 값을 넣어 캘린더와 하단 리스트를 재 빌드 시킴
   void _onDaySelected(DateTime selectedDay, DateTime _) {
     selectedDays.value = selectedDay;
-    selectedEvents.value = _getEventsForDay(selectedDay);
+    selectedEvents.value = kEvents![selectedDay] ?? [];
   }
-}
 
-/// 선택한 날짜 값에 해당하는 Event 값을 꺼내옴
-List<Event> _getEventsForDay(DateTime day) {
-  // Implementation example
-  return kEvents[day] ?? [];
-}
-
-// test data
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-)..addAll(_kEventSource);
-
-final _kEventSource = {
-  for (var item in List.generate(50, (index) => index))
-    DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5):
-        List.generate(item % 4 + 1, (index) => Event('Event $item | ${index + 1}'))
-}..addAll({
-    kToday: [
-      Event('Today\'s Event 1'),
-      Event('Today\'s Event 2'),
-    ],
-  });
-
-int getHashCode(DateTime key) {
-  return key.day * 1000000 + key.month * 10000 + key.year;
-}
-
-class Event {
-  final String title;
-
-  const Event(this.title);
-
-  @override
-  String toString() => title;
+  List<ModelRecord> _getEventsForDay(DateTime day) {
+    // Implementation example
+    return kEvents?[day] ?? [];
+  }
 }

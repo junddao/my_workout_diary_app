@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
-import 'package:my_workout_diary_app/global/provider/login_provider.dart';
+import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
@@ -58,14 +58,25 @@ class _PageUserViewState extends State<PageUserView> {
       centerTitle: false,
       automaticallyImplyLeading: false,
       actions: [
-        TextButton(
-          onPressed: () {
-            // onSave();
+        PopupMenuButton<int>(
+          onSelected: (value) {
+            if (value == 0) {
+              context.read<AuthProvider>().signOut();
+              Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+            } else if (value == 1) {
+              context.read<AuthProvider>().drop();
+            }
           },
-          child: Text(
-            '등록하기',
-            style: DSTextStyles.bold14Tomato,
-          ),
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 0,
+              child: Text('로그아웃', style: DSTextStyles.regular14Black),
+            ),
+            PopupMenuItem(
+              value: 1,
+              child: Text('탈퇴하기', style: DSTextStyles.regular14Tomato),
+            ),
+          ],
         ),
       ],
     );
@@ -84,49 +95,49 @@ class _PageUserViewState extends State<PageUserView> {
               SizedBox(height: 20),
               Row(
                 children: [
-                  InkWell(
-                    onTap: () async {},
-                    child: Container(
-                      height: 80,
-                      width: 80,
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(300),
-                              child: CachedNetworkImage(
-                                imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
-                                fit: BoxFit.cover,
-                                height: 80,
-                                width: 80,
-                              )),
-                          Positioned(
-                            top: 60,
-                            left: 60,
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 20,
-                              width: 20,
-                              decoration: BoxDecoration(
-                                  color: DSColors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(width: 1, color: DSColors.grey_06)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(
-                                    Icons.camera_alt,
-                                    color: DSColors.grey_06,
-                                    size: 16,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 18),
+                  // InkWell(
+                  //   onTap: () async {},
+                  //   child: Container(
+                  //     height: 80,
+                  //     width: 80,
+                  //     child: Stack(
+                  //       children: [
+                  //         ClipRRect(
+                  //             borderRadius: BorderRadius.circular(300),
+                  //             child: CachedNetworkImage(
+                  //               imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
+                  //               fit: BoxFit.cover,
+                  //               height: 80,
+                  //               width: 80,
+                  //             )),
+                  //         Positioned(
+                  //           top: 60,
+                  //           left: 60,
+                  //           child: Container(
+                  //             alignment: Alignment.center,
+                  //             height: 20,
+                  //             width: 20,
+                  //             decoration: BoxDecoration(
+                  //                 color: DSColors.white,
+                  //                 borderRadius: BorderRadius.circular(16),
+                  //                 border: Border.all(width: 1, color: DSColors.grey_06)),
+                  //             child: Row(
+                  //               mainAxisAlignment: MainAxisAlignment.center,
+                  //               children: const [
+                  //                 Icon(
+                  //                   Icons.camera_alt,
+                  //                   color: DSColors.grey_06,
+                  //                   size: 16,
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(width: 18),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -161,11 +172,11 @@ class _PageUserViewState extends State<PageUserView> {
               ),
               const SizedBox(height: 40),
               DSButton(
-                  text: '로그아웃',
+                  text: '수정하기',
                   press: () {
                     _logout();
                   },
-                  type: ButtonType.warning,
+                  type: ButtonType.normal,
                   width: SizeConfig.screenWidth),
               const SizedBox(height: 24),
             ],
@@ -176,7 +187,7 @@ class _PageUserViewState extends State<PageUserView> {
   }
 
   void _logout() async {
-    bool result = await context.read<LoginProvider>().signOut();
+    bool result = await context.read<AuthProvider>().signOut();
     if (result) {
       Navigator.of(context).pushNamed('PageLogin');
     } else {

@@ -3,6 +3,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:my_workout_diary_app/global/enum/socail_type.dart';
+import 'package:my_workout_diary_app/global/model/common/model_response_common.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
 import 'package:my_workout_diary_app/global/model/user/model_request_sign_in.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_sign_in.dart';
@@ -13,11 +14,12 @@ import 'package:my_workout_diary_app/global/service/api_service.dart';
 import 'package:my_workout_diary_app/global/service/apple_login.dart';
 import 'package:my_workout_diary_app/global/service/kakao_login.dart';
 import 'package:my_workout_diary_app/global/util/util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginProvider extends ParentProvider {
+class AuthProvider extends ParentProvider {
   final KakaoLogin _kakaoLogin = KakaoLogin();
   final AppleLogin _appleLogin = AppleLogin();
-  bool isLoggedIn = false;
+  SocialType loginSocial = SocialType.none;
 
   Future<bool> kakaoLogin() async {
     setStateBusy();
@@ -57,6 +59,7 @@ class LoginProvider extends ParentProvider {
       }
 
       logger.d('kakao sign in success');
+      loginSocial = SocialType.kakao;
       setStateIdle();
       return true;
     } catch (e) {
@@ -67,9 +70,10 @@ class LoginProvider extends ParentProvider {
   Future<String> createCustomToken(Map<String, dynamic> user) async {
     const String url = '/user/kakao';
     try {
-      final customTokenResponse = await ApiService().postWithOutToken(url, user);
+      final result = await ApiService().postWithOutToken(url, user);
+      final customTokenResponse = result['data'].first;
 
-      return customTokenResponse['data']['fbCustomToken'];
+      return customTokenResponse['fbCustomToken'];
     } catch (e) {
       throw Exception();
     }
@@ -103,7 +107,8 @@ class LoginProvider extends ParentProvider {
         return false;
       }
 
-      logger.d('kakao sign in success');
+      logger.d('apple sign in success');
+      loginSocial = SocialType.apple;
       setStateIdle();
       return true;
     } catch (e) {
@@ -111,24 +116,39 @@ class LoginProvider extends ParentProvider {
     }
   }
 
-  Future<void> appleLogout() async {
-    setStateBusy();
-    await FirebaseAuth.instance.signOut();
-    isLoggedIn = false;
-
-    setStateIdle();
-  }
-
   Future<bool> signOut() async {
     setStateBusy();
     try {
       setStateBusy();
-      await FirebaseAuth.instance.signOut();
-      await _kakaoLogin.logout();
+      bool result = false;
 
-      isLoggedIn = false;
+      if (loginSocial == SocialType.kakao) {
+        result = await _kakaoLogin.logout();
+      }
+      if (result == false) {
+        return false;
+      }
+
+      loginSocial = SocialType.none;
+      await FirebaseAuth.instance.signOut();
+      await ModelSharedPreferences.removeAll();
 
       setStateIdle();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> drop() async {
+    try {
+      const String url = '/user/drop';
+      Map<String, dynamic> result = await ApiService().get(url);
+      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(result);
+      if (modelResponseCommon.success == false) {
+        return false;
+      }
+
       return true;
     } catch (e) {
       return false;

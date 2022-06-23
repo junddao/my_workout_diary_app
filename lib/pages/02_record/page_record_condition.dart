@@ -2,9 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
+import 'package:my_workout_diary_app/global/enum/condition_type.dart';
+import 'package:my_workout_diary_app/global/model/record/model_request_create_record.dart';
+import 'package:my_workout_diary_app/global/provider/record_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
+import 'package:provider/provider.dart';
 
 class PageRecordCondition extends StatefulWidget {
   const PageRecordCondition({Key? key}) : super(key: key);
@@ -15,6 +19,8 @@ class PageRecordCondition extends StatefulWidget {
 
 class _PageRecordConditionState extends State<PageRecordCondition> {
   ValueNotifier<double> score = ValueNotifier(3);
+  ConditionType condition = ConditionType.GD;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +29,30 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 30),
         child: DSButton(
           press: () {
+            switch (score.value.toInt()) {
+              case 1:
+                condition = ConditionType.BD;
+                break;
+              case 2:
+                condition = ConditionType.NB;
+                break;
+              case 3:
+                condition = ConditionType.GD;
+                break;
+              case 4:
+                condition = ConditionType.VG;
+                break;
+              default:
+                condition = ConditionType.GT;
+                break;
+            }
+            ModelRequestCreateRecord modelRequestCreateRecord = ModelRequestCreateRecord(
+              workoutTime: context.read<RecordProvider>().time ~/ 10,
+              condition: condition,
+              endTime: context.read<RecordProvider>().startTime,
+              startTime: context.read<RecordProvider>().endTime,
+            );
+            context.read<RecordProvider>().createRecord(modelRequestCreateRecord);
             Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
           },
           text: '저장하기',

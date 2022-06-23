@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
-import 'package:my_workout_diary_app/global/provider/login_provider.dart';
+import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/page_tabs.dart';

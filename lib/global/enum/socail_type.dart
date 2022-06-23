@@ -1,1 +1,1 @@
-enum SocialType { kakao, apple }
+enum SocialType { kakao, apple, none }
