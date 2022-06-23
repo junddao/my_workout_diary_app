@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
+import 'package:my_workout_diary_app/global/model/record/model_record.dart';
+import 'package:my_workout_diary_app/global/model/record/model_record_event.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/pages/02_record/page_record.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -11,16 +13,16 @@ TableCalendar DSTableCalendar(
     {required DateTime? selectedDay,
     required void Function(DateTime, DateTime)? onDaySelected,
     required DateTime focusedDay,
-    required List<Event> Function(DateTime)? eventLoader}) {
+    required List<ModelRecord> Function(DateTime)? eventLoader}) {
   String klocale = Platform.localeName.substring(0, 2) == 'un' ? 'en' : Platform.localeName.substring(0, 2);
-  return TableCalendar<Event>(
+  return TableCalendar<ModelRecord>(
     rowHeight: 80,
     daysOfWeekHeight: 40,
     selectedDayPredicate: (day) => isSameDay(selectedDay, day),
     onDaySelected: onDaySelected,
     locale: klocale,
-    firstDay: kFirstDay,
-    lastDay: kLastDay,
+    firstDay: DateTime(2022, 5, 1),
+    lastDay: DateTime.now(),
     focusedDay: focusedDay,
     calendarFormat: CalendarFormat.month,
     startingDayOfWeek: StartingDayOfWeek.monday,
