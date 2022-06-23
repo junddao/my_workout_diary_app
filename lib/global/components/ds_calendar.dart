@@ -23,7 +23,7 @@ TableCalendar DSTableCalendar(
     locale: klocale,
     firstDay: DateTime(2022, 5, 1),
     lastDay: DateTime.now(),
-    focusedDay: focusedDay,
+    focusedDay: selectedDay ?? focusedDay,
     calendarFormat: CalendarFormat.month,
     startingDayOfWeek: StartingDayOfWeek.monday,
     availableGestures: AvailableGestures.none, //disable swipe between days
