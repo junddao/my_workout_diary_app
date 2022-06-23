@@ -40,42 +40,29 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ValueListenableBuilder<double>(
-                valueListenable: score,
-                builder: (context, value, child) {
-                  switch (value.toInt() - 1) {
-                    case 0:
-                      return Icon(
-                        Icons.sentiment_very_dissatisfied,
-                        color: Colors.red,
-                        size: (SizeConfig.screenWidth - 150) / 3,
-                      );
-                    case 1:
-                      return Icon(
-                        Icons.sentiment_dissatisfied,
-                        color: Colors.redAccent,
-                        size: (SizeConfig.screenWidth - 150) / 3,
-                      );
-                    case 2:
-                      return Icon(
-                        Icons.sentiment_neutral,
-                        color: Colors.amber,
-                        size: (SizeConfig.screenWidth - 150) / 3,
-                      );
-                    case 3:
-                      return Icon(
-                        Icons.sentiment_satisfied,
-                        color: Colors.lightGreen,
-                        size: (SizeConfig.screenWidth - 150) / 3,
-                      );
-                    default:
-                      return Icon(
-                        Icons.sentiment_very_satisfied,
-                        color: Colors.green,
-                        size: (SizeConfig.screenWidth - 150) / 3,
-                      );
-                  }
-                }),
+            SizedBox(
+              width: (SizeConfig.screenWidth - 150) / 3,
+              child: ValueListenableBuilder<double>(
+                  valueListenable: score,
+                  builder: (context, value, child) {
+                    switch (value.toInt() - 1) {
+                      case 0:
+                        return Image.asset('assets/images/b1.png');
+
+                      case 1:
+                        return Image.asset('assets/images/b2.png');
+
+                      case 2:
+                        return Image.asset('assets/images/b3.png');
+
+                      case 3:
+                        return Image.asset('assets/images/b4.png');
+                      case 4:
+                      default:
+                        return Image.asset('assets/images/b5.png');
+                    }
+                  }),
+            ),
             SizedBox(
               height: 24,
             ),
@@ -109,30 +96,19 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
       itemBuilder: (context, _) {
         switch (_) {
           case 0:
-            return Icon(
-              Icons.sentiment_very_dissatisfied,
-              color: Colors.red,
-            );
+            return Image.asset('assets/images/b1.png');
+
           case 1:
-            return Icon(
-              Icons.sentiment_dissatisfied,
-              color: Colors.redAccent,
-            );
+            return Image.asset('assets/images/b2.png');
+
           case 2:
-            return Icon(
-              Icons.sentiment_neutral,
-              color: Colors.amber,
-            );
+            return Image.asset('assets/images/b3.png');
+
           case 3:
-            return Icon(
-              Icons.sentiment_satisfied,
-              color: Colors.lightGreen,
-            );
+            return Image.asset('assets/images/b4.png');
+          case 4:
           default:
-            return Icon(
-              Icons.sentiment_very_satisfied,
-              color: Colors.green,
-            );
+            return Image.asset('assets/images/b5.png');
         }
       },
       onRatingUpdate: (rating) {
