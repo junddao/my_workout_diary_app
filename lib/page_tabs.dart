@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/provider/record_provider.dart';
 import 'package:my_workout_diary_app/global/service/timer_service.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
@@ -64,7 +64,7 @@ class _PageTabViewState extends State<PageTabView> {
   }
 
   Widget _floatingActionButton() {
-    return Consumer<WorkoutProvider>(builder: (_, value, __) {
+    return Consumer<RecordProvider>(builder: (_, value, __) {
       return ElevatedButton(
         child: value.time != 0
             ? Text('${value.time ~/ 10}'.toTimeWithMinSec(), style: DSTextStyles.bold10Black)
@@ -133,7 +133,7 @@ class _PageTabViewState extends State<PageTabView> {
     );
   }
 
-  dialog(BuildContext context, WorkoutProvider provider) async {
+  dialog(BuildContext context, RecordProvider provider) async {
     var result = await DSDialog.showTwoButtonDialog(
       context: context,
       title: '앗!',
