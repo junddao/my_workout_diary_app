@@ -14,10 +14,13 @@ TableCalendar DSTableCalendar(
     required void Function(DateTime, DateTime)? onDaySelected,
     required DateTime focusedDay,
     required List<ModelRecord> Function(DateTime)? eventLoader}) {
+  String klocale = Platform.localeName.substring(0, 2) == 'un' ? 'en' : Platform.localeName.substring(0, 2);
   return TableCalendar<ModelRecord>(
+    rowHeight: 80,
+    daysOfWeekHeight: 40,
     selectedDayPredicate: (day) => isSameDay(selectedDay, day),
     onDaySelected: onDaySelected,
-    locale: Platform.localeName.substring(0, 2) == 'un' ? 'ko' : Platform.localeName.substring(0, 2),
+    locale: klocale,
     firstDay: DateTime(2022, 5, 1),
     lastDay: DateTime.now(),
     focusedDay: focusedDay,
@@ -46,21 +49,21 @@ TableCalendar DSTableCalendar(
       outsideTextStyle: TextStyle(color: DSColors.gray3),
     ),
     daysOfWeekStyle: DaysOfWeekStyle(
-      dowTextFormatter: (date, locale) {
-        return locale == 'ko'
-            ? DateFormat.E(locale).format(date).substring(0, 1)
-            : DateFormat.E(locale).format(date).substring(0, 2);
-      },
       weekdayStyle: const TextStyle(color: DSColors.gray6),
       weekendStyle: const TextStyle(color: DSColors.tomato),
     ),
     headerVisible: true,
     calendarBuilders: CalendarBuilders(
-      todayBuilder: (context, day, focusedDay) {
-        return dsTodayCell(day);
+      dowBuilder: (context, day) {
+        return Align(
+            alignment: Alignment.topCenter,
+            child: Text(
+              DateFormat.E(klocale).format(day),
+              style: _isWeekend(day) ? CalendarStyle().weekendTextStyle : CalendarStyle().defaultTextStyle,
+            ));
       },
-      selectedBuilder: (context, day, _) {
-        return dsSelectedCell(day);
+      prioritizedBuilder: (context, day, focusedDay) {
+        return cell(day, focusedDay, selectedDay);
       },
       markerBuilder: (context, day, events) {
         return dsMarker(events.length);
@@ -69,94 +72,92 @@ TableCalendar DSTableCalendar(
   );
 }
 
-Container dsTodayCell(DateTime day) {
-  return Container(
-    decoration: BoxDecoration(
-      color: DSColors.facebook_blue.withOpacity(0.5),
-      shape: BoxShape.circle,
-    ),
-    margin: const EdgeInsets.all(4.0),
-    child: Center(
-      child: Text(
-        '${day.day}',
-        style: const TextStyle(
-          fontSize: 16.0,
-          color: DSColors.white,
-        ),
+Widget cell(DateTime day, DateTime focusDay, DateTime? selectedDay) {
+  //todayBuilder
+  if (isSameDay(day, DateTime.now())) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      alignment: Alignment.topCenter,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+            width: 25,
+            child: ColoredBox(
+                color: DSColors.grapefruit.withOpacity(0.5),
+                child: Text(
+                  day.day.toString(),
+                  textAlign: TextAlign.center,
+                ))),
       ),
-    ),
+    );
+  }
+  //selectedBuilder
+  if (isSameDay(day, selectedDay)) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      alignment: Alignment.topCenter,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+            width: 25,
+            child: ColoredBox(
+                color: DSColors.facebook_blue.withOpacity(0.7),
+                child: Text(
+                  day.day.toString(),
+                  textAlign: TextAlign.center,
+                ))),
+      ),
+    );
+  }
+  return AnimatedContainer(
+    duration: const Duration(milliseconds: 250),
+    alignment: Alignment.topCenter,
+    child: Text(day.day.toString(),
+        style: isOutside(day, focusDay) ? CalendarStyle().outsideTextStyle : CalendarStyle().defaultTextStyle),
   );
 }
 
-Container dsSelectedCell(DateTime day) {
-  return Container(
-    decoration: BoxDecoration(
-      color: DSColors.grapefruit.withOpacity(0.5),
-      shape: BoxShape.circle,
-    ),
-    margin: const EdgeInsets.all(4.0),
-    child: Center(
-      child: Text(
-        '${day.day}',
-        style: const TextStyle(
-          fontSize: 16.0,
-          color: DSColors.white,
-        ),
-      ),
-    ),
-  );
-}
-
-Widget? dsMarker(int count) {
+Widget dsMarker(int count) {
   late Widget? chiid;
   switch (count) {
     case 1:
-      chiid = Text(
-        count.toString(),
-      );
+      chiid = Image.asset('assets/images/b1.png');
       break;
     case 2:
-      chiid = Text(
-        count.toString(),
-      );
+      chiid = Image.asset('assets/images/b2.png');
       break;
     case 3:
-      chiid = Text(
-        count.toString(),
-      );
+      chiid = Image.asset('assets/images/b3.png');
       break;
     case 4:
-      chiid = Text(
-        count.toString(),
-      );
+      chiid = Image.asset('assets/images/b4.png');
       break;
     case 5:
-      chiid = Text(
-        count.toString(),
-      );
+      chiid = Image.asset('assets/images/b5.png');
       break;
     default:
-      chiid = null;
+      chiid = Image.asset('assets/images/default_marker.png');
       break;
   }
-  return chiid != null
-      ? AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          margin: CalendarStyle().cellMargin,
-          padding: CalendarStyle().cellPadding,
-          decoration: CalendarStyle().disabledDecoration,
-          alignment: CalendarStyle().cellAlignment,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
-            child: Container(
-              width: 30,
-              height: 30,
-              child: Center(
-                child: chiid,
-              ),
-              color: Colors.amber,
-            ),
-          ),
-        )
-      : null;
+  return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      margin: CalendarStyle().cellMargin,
+      padding: CalendarStyle().cellPadding,
+      alignment: CalendarStyle().cellAlignment,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 4.0),
+        child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          maxRadius: 25.0,
+          child: chiid,
+        ),
+      ));
+}
+
+isOutside(DateTime day, DateTime focusDay) => day.month != focusDay.month;
+bool _isWeekend(
+  DateTime day, {
+  List<int> weekendDays = const [DateTime.saturday, DateTime.sunday],
+}) {
+  return weekendDays.contains(day.weekday);
 }
