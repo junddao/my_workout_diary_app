@@ -50,12 +50,12 @@ class ModelUser {
       id: map['_id'],
       email: map['email'],
       name: map['name'],
-      introduce: map['introduce'] != null ? map['introduce'] : null,
-      profileImage: map['profileImage'] != null ? map['profileImage'] : null,
+      introduce: map['introduce'],
+      profileImage: map['profileImage'],
       social: map['social'],
-      pushEnabled: map['pushEnabled'] != null ? map['pushEnabled'] : null,
-      createdAt: map['createdAt'] != null ? map['createdAt'] : null,
-      updatedAt: map['updatedAt'] != null ? map['updatedAt'] : null,
+      pushEnabled: map['pushEnabled'],
+      createdAt: map['createdAt'],
+      updatedAt: map['updatedAt'],
     );
   }
 
