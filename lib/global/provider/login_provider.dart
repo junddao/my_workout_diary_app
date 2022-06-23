@@ -22,49 +22,57 @@ class LoginProvider extends ParentProvider {
   Future<bool> kakaoLogin() async {
     setStateBusy();
 
-    bool result = await _kakaoLogin.login();
-    if (result == false) {
-      logger.d('kakao login error');
+    try {
+      bool result = await _kakaoLogin.login();
+      if (result == false) {
+        logger.d('kakao login error');
+        setStateIdle();
+        return false;
+      }
+
+      kakao.User? kakaoUser = await kakao.UserApi.instance.me();
+
+      // server에서 custom token 을 얻는 부분
+      final customToken = await createCustomToken({
+        'uid': kakaoUser.id.toString(),
+        'name': kakaoUser.kakaoAccount!.profile!.nickname ?? '',
+        'email': kakaoUser.kakaoAccount!.email ?? '',
+        'photoURL': kakaoUser.kakaoAccount!.profile!.profileImageUrl ?? '',
+      });
+      if (customToken == null) {
+        logger.d('get customToken error');
+        return false;
+      }
+
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCustomToken(customToken);
+
+      User? fbUser = userCredential.user;
+      if (fbUser == null) {
+        logger.d('get firebase user error');
+      }
+      // firebase 유저 가져와서 서버에 로그인 합시다.
+      result = await signIn(fbUser!.email!);
+      if (result == false) {
+        return false;
+      }
+
+      logger.d('kakao sign in success');
       setStateIdle();
+      return true;
+    } catch (e) {
       return false;
     }
-
-    kakao.User? kakaoUser = await kakao.UserApi.instance.me();
-
-    // server에서 custom token 을 얻는 부분
-    final customToken = await createCustomToken({
-      'uid': kakaoUser.id.toString(),
-      'name': kakaoUser.kakaoAccount!.profile!.nickname ?? '',
-      'email': kakaoUser.kakaoAccount!.email ?? '',
-      'photoURL': kakaoUser.kakaoAccount!.profile!.profileImageUrl ?? '',
-    });
-    logger.d('customToken = $customToken');
-    UserCredential? userCredential = await FirebaseAuth.instance.signInWithCustomToken(customToken);
-    if (userCredential == null) {
-      logger.d('get firebase user error');
-      return false;
-    }
-
-    User? fbUser = userCredential.user;
-    if (fbUser == null) {
-      logger.d('get firebase user error');
-    }
-    // firebase 유저 가져와서 서버에 로그인 합시다.
-    result = await signIn(fbUser!.email!);
-    if (result == false) {
-      return false;
-    }
-
-    logger.d('kakao sign in success');
-    setStateIdle();
-    return true;
   }
 
   Future<String> createCustomToken(Map<String, dynamic> user) async {
     const String url = '/user/kakao';
-    final customTokenResponse = await ApiService().postWithOutToken(url, user);
+    try {
+      final customTokenResponse = await ApiService().postWithOutToken(url, user);
 
-    return customTokenResponse['fbCustomToken'];
+      return customTokenResponse['data']['fbCustomToken'];
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   Future<bool> signIn(String email) async {
@@ -73,7 +81,8 @@ class LoginProvider extends ParentProvider {
       const String url = '/user/signin';
       Map<String, dynamic> _data = await ApiService().postWithOutToken(url, modelRequestSignIn.toMap());
       ModelResponseSignIn modelResponseSignIn = ModelResponseSignIn.fromMap(_data);
-      await ModelSharedPreferences.writeToken(modelResponseSignIn.accessToken);
+      ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
+      await ModelSharedPreferences.writeToken(modelSignIn.accessToken);
       return true;
     } catch (e) {
       return false;

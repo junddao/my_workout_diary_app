@@ -6,20 +6,28 @@ import 'package:my_workout_diary_app/global/enum/condition_type.dart';
 import 'package:my_workout_diary_app/global/model/record/model_record.dart';
 
 class ModelResponseGetRecords {
-  List<ModelRecord> records;
+  bool success;
+  String? error;
+  List<ModelRecord>? data;
   ModelResponseGetRecords({
-    required this.records,
+    required this.success,
+    this.error,
+    this.data,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'records': records.map((x) => x.toMap()).toList(),
+      'success': success,
+      'error': error,
+      'data': data?.map((x) => x.toMap()).toList(),
     };
   }
 
   factory ModelResponseGetRecords.fromMap(Map<String, dynamic> map) {
     return ModelResponseGetRecords(
-      records: List<ModelRecord>.from(map['records'].map((x) => ModelRecord.fromMap(x))),
+      success: map['success'],
+      error: map['error'] != null ? map['error'] : null,
+      data: map['data'] != null ? List<ModelRecord>.from(map['data'].map((x) => ModelRecord.fromMap(x))) : null,
     );
   }
 

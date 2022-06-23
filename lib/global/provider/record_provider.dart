@@ -46,7 +46,8 @@ class RecordProvider extends ParentProvider {
 
       var response = await ApiService().post(path, requestGetRecords.toMap());
       ModelResponseGetRecords modelResponseGetRecords = ModelResponseGetRecords.fromMap(response);
-      records = modelResponseGetRecords.records;
+
+      records = modelResponseGetRecords.data ?? [];
       setStateIdle();
       return true;
     } catch (e) {
