@@ -45,7 +45,7 @@ class ApiService {
       final token = await _getAuthorizationToken();
       print(token);
       _headers['Authorization'] = 'Bearer $token';
-      print('${ModelConfig().serverBaseUrl}');
+      print(ModelConfig().serverBaseUrl);
       response = await Dio()
           .get('${ModelConfig().serverBaseUrl}$_path',
               options: Options(

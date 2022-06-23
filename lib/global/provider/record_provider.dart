@@ -3,8 +3,10 @@ import 'dart:collection';
 
 import 'package:intl/intl.dart';
 import 'package:my_workout_diary_app/global/bloc/parent_provider.dart';
+import 'package:my_workout_diary_app/global/model/common/model_response_common.dart';
 import 'package:my_workout_diary_app/global/model/record/model_record.dart';
 import 'package:my_workout_diary_app/global/model/record/model_record_event.dart';
+import 'package:my_workout_diary_app/global/model/record/model_request_create_record.dart';
 import 'package:my_workout_diary_app/global/model/record/model_request_get_records.dart';
 import 'package:my_workout_diary_app/global/model/record/model_response_get_records.dart';
 import 'package:my_workout_diary_app/global/service/api_service.dart';
@@ -20,10 +22,17 @@ class RecordProvider extends ParentProvider {
   double get time => _time;
   bool get isStart => _isStart;
 
+  DateTime _startTime = DateTime.now();
+  DateTime _endTime = DateTime.now();
+
+  DateTime get startTime => _startTime;
+  DateTime get endTime => _endTime;
+
   List<ModelRecord> records = [];
 
   void start() {
     _isStart = true;
+    _startTime = DateTime.now();
     _timer = Timer.periodic(Duration(milliseconds: 100), (timer) async {
       _time++;
       print(_time);
@@ -38,10 +47,26 @@ class RecordProvider extends ParentProvider {
   }
 
   void stop() {
+    _endTime = DateTime.now();
     _isStart = false;
     _timer.cancel();
     _time = 0;
     notifyListeners();
+  }
+
+  Future<bool> createRecord(ModelRequestCreateRecord input) async {
+    try {
+      setStateBusy();
+      const String path = '/record/create';
+
+      var response = await ApiService().post(path, input.toMap());
+      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(response);
+
+      setStateIdle();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<bool> getRecords(ModelRequestGetRecords requestGetRecords) async {
