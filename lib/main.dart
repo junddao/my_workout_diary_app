@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:my_workout_diary_app/firebase_options.dart';
@@ -26,6 +27,7 @@ void main() {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await readConfigFile();
+    MobileAds.instance.initialize();
     runApp(const MyApp());
   });
 }

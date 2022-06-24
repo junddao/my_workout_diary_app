@@ -8,6 +8,7 @@ import 'package:my_workout_diary_app/global/provider/record_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
+import 'package:my_workout_diary_app/global/util/ad_helper.dart';
 import 'package:provider/provider.dart';
 
 class PageRecordCondition extends StatefulWidget {
@@ -54,6 +55,7 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
             );
             context.read<RecordProvider>().createRecord(modelRequestCreateRecord);
             Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
+            showInterstitialAd();
           },
           text: '저장하기',
           type: ButtonType.normal,

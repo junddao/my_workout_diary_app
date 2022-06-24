@@ -8,6 +8,7 @@ import 'package:my_workout_diary_app/global/service/timer_service.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
+import 'package:my_workout_diary_app/global/util/ad_helper.dart';
 import 'package:my_workout_diary_app/pages/02_record/page_record.dart';
 import 'package:my_workout_diary_app/pages/03_Timer/page_timer.dart';
 import 'package:my_workout_diary_app/pages/04_best_user/page_best_user.dart';
@@ -46,6 +47,12 @@ class _PageTabViewState extends State<PageTabView> {
   ];
 
   int _selectedIndex = 0;
+  @override
+  void initState() {
+    createInterstitialAd();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
