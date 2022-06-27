@@ -4,6 +4,9 @@
         android:label="마이 헬스 다이어리"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2713562828985788~5354400235"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
