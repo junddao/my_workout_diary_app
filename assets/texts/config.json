@@ -4,7 +4,7 @@
   "server_info": [
     {
       "type": "dev",
-      "base_url": "http://192.168.1.82:3000",
+      "base_url": "http://43.200.119.214",
       "websocket_server": ""
     }
   ]

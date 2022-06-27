@@ -44,7 +44,7 @@
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>GADApplicationIdentifier</key>
-  		<string>ca-app-pub-2713562828985788~5354400235</string>
+		<string>ca-app-pub-2713562828985788~5354400235</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>... explain why the app uses the microphone here ...</string>
 		<key>UILaunchStoryboardName</key>
