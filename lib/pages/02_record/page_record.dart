@@ -84,11 +84,14 @@ class _PageMainViewState extends State<PageMainView> {
                   return ValueListenableBuilder<DateTime?>(
                     valueListenable: selectedDays,
                     builder: (context, value, child) {
-                      return DSTableCalendar(
-                          selectedDay: value,
-                          focusedDay: DateTime.now(),
-                          onDaySelected: _onDaySelected,
-                          eventLoader: _getEventsForDay);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: DSTableCalendar(
+                            selectedDay: value,
+                            focusedDay: DateTime.now(),
+                            onDaySelected: _onDaySelected,
+                            eventLoader: _getEventsForDay),
+                      );
                     },
                   );
                 }),
