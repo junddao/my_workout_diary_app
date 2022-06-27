@@ -116,6 +116,21 @@ class AuthProvider extends ParentProvider {
     }
   }
 
+  Future<bool> updateProfile() async {
+    try {
+      const String url = '/user/drop';
+      Map<String, dynamic> result = await ApiService().get(url);
+      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(result);
+      if (modelResponseCommon.success == false) {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> signOut() async {
     setStateBusy();
     try {
@@ -136,21 +151,25 @@ class AuthProvider extends ParentProvider {
       setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
 
   Future<bool> drop() async {
     try {
+      setStateBusy();
       const String url = '/user/drop';
       Map<String, dynamic> result = await ApiService().get(url);
       ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(result);
       if (modelResponseCommon.success == false) {
+        setStateIdle();
         return false;
       }
-
+      setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
