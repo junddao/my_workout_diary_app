@@ -17,9 +17,11 @@ class RecordProvider extends ParentProvider {
   late Timer _timer;
 
   double _time = 0;
+  double _recordTime = 0;
   bool _isStart = false;
 
   double get time => _time;
+  double get recordTime => _recordTime;
   bool get isStart => _isStart;
 
   DateTime _startTime = DateTime.now();
@@ -49,6 +51,7 @@ class RecordProvider extends ParentProvider {
   void stop() {
     _endTime = DateTime.now();
     _isStart = false;
+    _recordTime = _time;
     _timer.cancel();
     _time = 0;
     notifyListeners();
@@ -111,7 +114,6 @@ class RecordProvider extends ParentProvider {
               .toList()
               .length,
           (index) {
-            print(index);
             List<ModelRecord> filteredRecords = [];
             for (var e in records) {
               if (e.startTime.toFullDateString3() == eventDates[i].toFullDateString3()) {

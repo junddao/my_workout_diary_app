@@ -102,6 +102,7 @@ class _PageMainViewState extends State<PageMainView> {
                 valueListenable: selectedEvents,
                 builder: (context, value, _) {
                   return ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: value.length,
                     itemBuilder: (context, index) {
                       return Container(
@@ -123,6 +124,7 @@ class _PageMainViewState extends State<PageMainView> {
                 },
               ),
             ),
+            SizedBox(height: 60),
           ],
         ),
       );
