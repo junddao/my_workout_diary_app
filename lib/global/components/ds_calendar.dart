@@ -2,10 +2,9 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
+import 'package:my_workout_diary_app/global/enum/condition_type.dart';
 import 'package:my_workout_diary_app/global/model/record/model_record.dart';
-import 'package:my_workout_diary_app/global/model/record/model_record_event.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
-import 'package:my_workout_diary_app/pages/02_record/page_record.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/material.dart';
 
@@ -63,16 +62,16 @@ TableCalendar DSTableCalendar(
             ));
       },
       prioritizedBuilder: (context, day, focusedDay) {
-        return cell(day, focusedDay, selectedDay);
+        return _cell(day, focusedDay, selectedDay);
       },
       markerBuilder: (context, day, events) {
-        return dsMarker(events.length);
+        return _dsMarker(events);
       },
     ),
   );
 }
 
-Widget cell(DateTime day, DateTime focusDay, DateTime? selectedDay) {
+Widget _cell(DateTime day, DateTime focusDay, DateTime? selectedDay) {
   //todayBuilder
   if (isSameDay(day, DateTime.now())) {
     return AnimatedContainer(
@@ -113,13 +112,23 @@ Widget cell(DateTime day, DateTime focusDay, DateTime? selectedDay) {
     duration: const Duration(milliseconds: 250),
     alignment: Alignment.topCenter,
     child: Text(day.day.toString(),
-        style: isOutside(day, focusDay) ? CalendarStyle().outsideTextStyle : CalendarStyle().defaultTextStyle),
+        style: _isOutside(day, focusDay) ? CalendarStyle().outsideTextStyle : CalendarStyle().defaultTextStyle),
   );
 }
 
-Widget dsMarker(int count) {
+Widget _dsMarker(List<ModelRecord>? records) {
   late Widget? chiid;
-  switch (count) {
+  int today = 0;
+
+  if (records != null && records.length >= 1) {
+    int sum = 0;
+    records.forEach((element) {
+      sum += _conditionTypeParse(element.condition);
+      print(element.condition);
+    });
+    today = sum ~/ records.length;
+  } else {}
+  switch ((today)) {
     case 1:
       chiid = Image.asset('assets/images/b1.png');
       break;
@@ -154,10 +163,27 @@ Widget dsMarker(int count) {
       ));
 }
 
-isOutside(DateTime day, DateTime focusDay) => day.month != focusDay.month;
+_isOutside(DateTime day, DateTime focusDay) => day.month != focusDay.month;
 bool _isWeekend(
   DateTime day, {
   List<int> weekendDays = const [DateTime.saturday, DateTime.sunday],
 }) {
   return weekendDays.contains(day.weekday);
+}
+
+int _conditionTypeParse(ConditionType type) {
+  //GT, VG, GD, NB, BD
+  switch (type) {
+    case ConditionType.GT:
+      return 5;
+    case ConditionType.VG:
+      return 4;
+    case ConditionType.GD:
+      return 3;
+    case ConditionType.NB:
+      return 2;
+    case ConditionType.BD:
+    default:
+      return 1;
+  }
 }
