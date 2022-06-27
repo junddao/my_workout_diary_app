@@ -4,6 +4,7 @@ import 'package:my_workout_diary_app/page_tabs.dart';
 import 'package:my_workout_diary_app/pages/01_login/page_login.dart';
 import 'package:my_workout_diary_app/pages/02_record/page_record_condition.dart';
 import 'package:my_workout_diary_app/pages/03_Timer/page_play.dart';
+import 'package:my_workout_diary_app/pages/03_Timer/page_timer.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -29,6 +30,11 @@ class Routers {
       case 'PageRecordCondition':
         return CupertinoPageRoute(
           builder: (_) => PageRecordCondition(),
+          settings: settings,
+        );
+      case 'PageTimer':
+        return CupertinoPageRoute(
+          builder: (_) => PageTimer(),
           settings: settings,
         );
 

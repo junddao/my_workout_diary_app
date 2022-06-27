@@ -40,7 +40,8 @@ class PageTabView extends StatefulWidget {
 class _PageTabViewState extends State<PageTabView> {
   final List _pages = [
     PageRecord(),
-    PageTimer(),
+    Container(),
+    // PageTimer(),
     Container(),
     PageBestUser(),
     PageUser(),
@@ -77,7 +78,8 @@ class _PageTabViewState extends State<PageTabView> {
             ? Text('${value.time ~/ 10}'.toTimeWithMinSec(), style: DSTextStyles.bold10Black)
             : Text('시작?', style: DSTextStyles.bold10White),
         onPressed: () {
-          value.isStart ? dialog(_, value) : value.start();
+          value.isStart ? stopDialog(_, value) : startDialog(_, value);
+          // value.isStart ? stopDialog(_, value) : value.start();
         },
         style: ElevatedButton.styleFrom(
           primary: value.time == 0 ? DSColors.blue5 : DSColors.kakao_yellow,
@@ -95,6 +97,10 @@ class _PageTabViewState extends State<PageTabView> {
   Widget _bottomNavigationBar() {
     return BottomNavigationBar(
       onTap: (int index) {
+        if (index == 1) {
+          timerBottomSheet();
+          return;
+        }
         if (index == 2) {
           return;
         }
@@ -140,7 +146,83 @@ class _PageTabViewState extends State<PageTabView> {
     );
   }
 
-  dialog(BuildContext context, RecordProvider provider) async {
+  Future<void> timerBottomSheet() {
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          width: SizeConfig.screenWidth,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                flex: 1,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed('PageTimer');
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.timer_outlined),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text('타바타 타이머'),
+                    ],
+                  ),
+                ),
+              ),
+              VerticalDivider(
+                color: DSColors.greyish,
+                indent: 2,
+                endIndent: 20,
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.warning_outlined, color: DSColors.tomato),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text('작업중!'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  startDialog(BuildContext context, RecordProvider provider) async {
+    var result = await DSDialog.showTwoButtonDialog(
+      context: context,
+      title: '시작',
+      subTitle: '운동을 시작하시겠습니까?',
+      btn1Text: '아니요,',
+      btn2Text: '네,',
+    );
+    if (result == true) {
+      provider.start();
+    }
+  }
+
+  stopDialog(BuildContext context, RecordProvider provider) async {
     var result = await DSDialog.showTwoButtonDialog(
       context: context,
       title: '앗!',
