@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/enum/condition_type.dart';
@@ -48,14 +49,15 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
                 break;
             }
             ModelRequestCreateRecord modelRequestCreateRecord = ModelRequestCreateRecord(
-              workoutTime: context.read<RecordProvider>().time ~/ 10,
+              workoutTime: context.read<RecordProvider>().recordTime ~/ 10,
               condition: condition,
               endTime: context.read<RecordProvider>().startTime,
               startTime: context.read<RecordProvider>().endTime,
             );
             context.read<RecordProvider>().createRecord(modelRequestCreateRecord);
-            Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
-            showInterstitialAd();
+
+            showInterstitialAd()
+                .then((value) => Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false));
           },
           text: '저장하기',
           type: ButtonType.normal,

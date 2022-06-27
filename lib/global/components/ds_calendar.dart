@@ -124,7 +124,6 @@ Widget _dsMarker(List<ModelRecord>? records) {
     int sum = 0;
     records.forEach((element) {
       sum += _conditionTypeParse(element.condition);
-      print(element.condition);
     });
     today = sum ~/ records.length;
   } else {}
