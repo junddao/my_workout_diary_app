@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
+import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
+import 'package:my_workout_diary_app/global/model/user/model_request_update.dart';
+import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
 import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
@@ -36,11 +39,11 @@ class PageUserView extends StatefulWidget {
 
 class _PageUserViewState extends State<PageUserView> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _tecName = TextEditingController();
+  final TextEditingController _textNameController = TextEditingController();
 
   @override
   void dispose() {
-    _tecName.dispose();
+    _textNameController.dispose();
     super.dispose();
   }
 
@@ -84,102 +87,124 @@ class _PageUserViewState extends State<PageUserView> {
 
   Widget _body() {
     final FocusScopeNode node = FocusScope.of(context);
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  // InkWell(
-                  //   onTap: () async {},
-                  //   child: Container(
-                  //     height: 80,
-                  //     width: 80,
-                  //     child: Stack(
-                  //       children: [
-                  //         ClipRRect(
-                  //             borderRadius: BorderRadius.circular(300),
-                  //             child: CachedNetworkImage(
-                  //               imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
-                  //               fit: BoxFit.cover,
-                  //               height: 80,
-                  //               width: 80,
-                  //             )),
-                  //         Positioned(
-                  //           top: 60,
-                  //           left: 60,
-                  //           child: Container(
-                  //             alignment: Alignment.center,
-                  //             height: 20,
-                  //             width: 20,
-                  //             decoration: BoxDecoration(
-                  //                 color: DSColors.white,
-                  //                 borderRadius: BorderRadius.circular(16),
-                  //                 border: Border.all(width: 1, color: DSColors.grey_06)),
-                  //             child: Row(
-                  //               mainAxisAlignment: MainAxisAlignment.center,
-                  //               children: const [
-                  //                 Icon(
-                  //                   Icons.camera_alt,
-                  //                   color: DSColors.grey_06,
-                  //                   size: 16,
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(width: 18),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(text: '안녕하세요\n', style: DSTextStyles.bold18WarmGrey),
-                            TextSpan(text: '${context.watch<UserProvider>().me.name}', style: DSTextStyles.bold18Black),
-                            TextSpan(text: '님!', style: DSTextStyles.bold18WarmGrey),
-                          ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    // InkWell(
+                    //   onTap: () async {},
+                    //   child: Container(
+                    //     height: 80,
+                    //     width: 80,
+                    //     child: Stack(
+                    //       children: [
+                    //         ClipRRect(
+                    //             borderRadius: BorderRadius.circular(300),
+                    //             child: CachedNetworkImage(
+                    //               imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
+                    //               fit: BoxFit.cover,
+                    //               height: 80,
+                    //               width: 80,
+                    //             )),
+                    //         Positioned(
+                    //           top: 60,
+                    //           left: 60,
+                    //           child: Container(
+                    //             alignment: Alignment.center,
+                    //             height: 20,
+                    //             width: 20,
+                    //             decoration: BoxDecoration(
+                    //                 color: DSColors.white,
+                    //                 borderRadius: BorderRadius.circular(16),
+                    //                 border: Border.all(width: 1, color: DSColors.grey_06)),
+                    //             child: Row(
+                    //               mainAxisAlignment: MainAxisAlignment.center,
+                    //               children: const [
+                    //                 Icon(
+                    //                   Icons.camera_alt,
+                    //                   color: DSColors.grey_06,
+                    //                   size: 16,
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(width: 18),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(text: '안녕하세요\n', style: DSTextStyles.bold18WarmGrey),
+                              TextSpan(
+                                  text: '${context.watch<UserProvider>().me.name}', style: DSTextStyles.bold18Black),
+                              TextSpan(text: '님!', style: DSTextStyles.bold18WarmGrey),
+                            ],
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 20),
-                      Text(context.watch<UserProvider>().me.email!),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Text('이름 수정하기', style: DSTextStyles.bold18Black),
-              DSInputField(
-                controller: _tecName,
-                hintText: "변경하실 성명을 입력해주세요",
-                warningMessage: "성명을 입력해주세요",
-                onEditingComplete: () => node.nextFocus(),
-                validator: (value) {
-                  if (value!.length > 10) {
-                    return "10자 내로 입력해주세요.";
-                  }
-                },
-              ),
-              const SizedBox(height: 40),
-              DSButton(
-                  text: '수정하기',
-                  press: () {
-                    _logout();
+                        SizedBox(height: 20),
+                        Text(context.watch<UserProvider>().me.email!),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Text('이름 수정하기', style: DSTextStyles.bold18Black),
+                DSInputField(
+                  controller: _textNameController,
+                  hintText: "변경하실 성명을 입력해주세요",
+                  warningMessage: "성명을 입력해주세요",
+                  onEditingComplete: () => node.nextFocus(),
+                  validator: (value) {
+                    if (value!.length > 10) {
+                      return "10자 내로 입력해주세요.";
+                    }
+                    if (value.isEmpty) {
+                      return "이름을 입력해주세요.";
+                    }
+                    return null;
                   },
-                  type: ButtonType.normal,
-                  width: SizeConfig.screenWidth),
-              const SizedBox(height: 24),
-            ],
+                ),
+                const SizedBox(height: 40),
+                DSButton(
+                    text: '수정하기',
+                    press: () async {
+                      var result = await _modify();
+                      if (result == true) {
+                        _textNameController.clear();
+                        FocusScope.of(context).unfocus();
+                        await DSDialog.showOneButtonDialog(
+                            context: context, title: '완료', subTitle: '프로필이 수정되었어요 😀', btnText: '확인');
+                      }
+                    },
+                    type: ButtonType.normal,
+                    width: SizeConfig.screenWidth),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
@@ -199,13 +224,29 @@ class _PageUserViewState extends State<PageUserView> {
     }
   }
 
-  // _body() {
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //       children: [
-  //         Text(context.watch<UserProvider>().me.email ?? ''),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Future<bool?> _modify() async {
+    var result = _formKey.currentState?.validate();
+    if (result == false) {
+      return false;
+    }
+    result = await DSDialog.showTwoButtonDialog(
+      context: context,
+      title: '수정하기',
+      subTitle: '프로필을 수정하시겠습니까?',
+      btn1Text: '아니요,',
+      btn2Text: '네,',
+    );
+    if (result == false) {
+      return false;
+    }
+
+    ModelUser updatedMe = context.read<UserProvider>().me;
+    updatedMe.name = _textNameController.text;
+
+    result = await context.read<UserProvider>().updateProfile(updatedMe);
+    if (result == false) {
+      return false;
+    }
+    return true;
+  }
 }

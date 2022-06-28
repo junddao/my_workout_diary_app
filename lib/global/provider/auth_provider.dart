@@ -6,6 +6,7 @@ import 'package:my_workout_diary_app/global/enum/socail_type.dart';
 import 'package:my_workout_diary_app/global/model/common/model_response_common.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
 import 'package:my_workout_diary_app/global/model/user/model_request_sign_in.dart';
+import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_sign_in.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
 import 'package:my_workout_diary_app/global/provider/parent_provider.dart';
@@ -136,21 +137,25 @@ class AuthProvider extends ParentProvider {
       setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
 
   Future<bool> drop() async {
     try {
+      setStateBusy();
       const String url = '/user/drop';
       Map<String, dynamic> result = await ApiService().get(url);
       ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(result);
       if (modelResponseCommon.success == false) {
+        setStateIdle();
         return false;
       }
-
+      setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
