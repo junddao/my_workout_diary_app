@@ -237,7 +237,7 @@ extension DSDateTime on DateTime {
   /// datetimeA.toTimestampString2(); // 11:39
   /// ```
   String toTimestampString2() {
-    return DateFormat('HH:mm').format(this.toLocal());
+    return DateFormat('hh:mm').format(this.toLocal());
   }
 
   String toTimeStampWithMinSec() {

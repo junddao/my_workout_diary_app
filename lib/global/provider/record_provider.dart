@@ -30,6 +30,14 @@ class RecordProvider extends ParentProvider {
   DateTime get startTime => _startTime;
   DateTime get endTime => _endTime;
 
+  LinkedHashMap<DateTime, List<ModelRecord>>? _kEvents;
+  List<ModelRecord> _selectedEvents = [];
+  DateTime? _selectedDay = DateTime.now();
+
+  LinkedHashMap<DateTime, List<ModelRecord>>? get kEvents => _kEvents;
+  List<ModelRecord> get selectedEvents => _selectedEvents;
+  DateTime? get selectedDay => _selectedDay;
+
   List<ModelRecord> records = [];
 
   void start() {
@@ -57,38 +65,17 @@ class RecordProvider extends ParentProvider {
     notifyListeners();
   }
 
-  Future<bool> createRecord(ModelRequestCreateRecord input) async {
-    try {
-      setStateBusy();
-      const String path = '/record/create';
-
-      var response = await ApiService().post(path, input.toMap());
-      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(response);
-
-      setStateIdle();
-      return true;
-    } catch (e) {
-      return false;
-    }
+  void setSelectedDay(DateTime? selectedDay) {
+    _selectedDay = selectedDay;
+    notifyListeners();
   }
 
-  Future<bool> getRecords(ModelRequestGetRecords requestGetRecords) async {
-    try {
-      setStateBusy();
-      const String path = '/record/get/records';
-
-      var response = await ApiService().post(path, requestGetRecords.toMap());
-      ModelResponseGetRecords modelResponseGetRecords = ModelResponseGetRecords.fromMap(response);
-
-      records = modelResponseGetRecords.data ?? [];
-      setStateIdle();
-      return true;
-    } catch (e) {
-      return false;
-    }
+  void setSelectedEvents() {
+    _selectedEvents = kEvents![selectedDay] ?? [];
+    notifyListeners();
   }
 
-  LinkedHashMap<DateTime, List<ModelRecord>> getEvents() {
+  void getEvents() {
     final kToday = DateTime.now();
 
     List<DateTime> eventDates = [];
@@ -132,6 +119,53 @@ class RecordProvider extends ParentProvider {
       },
     )..addAll(map);
 
-    return result;
+    _kEvents = result;
+    notifyListeners();
+  }
+
+  Future<bool> createRecord(ModelRequestCreateRecord input) async {
+    try {
+      setStateBusy();
+      const String path = '/record/create';
+
+      var response = await ApiService().post(path, input.toMap());
+      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(response);
+
+      setStateIdle();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> getRecords(ModelRequestGetRecords requestGetRecords) async {
+    try {
+      setStateBusy();
+      const String path = '/record/get/records';
+
+      var response = await ApiService().post(path, requestGetRecords.toMap());
+      ModelResponseGetRecords modelResponseGetRecords = ModelResponseGetRecords.fromMap(response);
+
+      records = modelResponseGetRecords.data ?? [];
+      setStateIdle();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteRecord(String id) async {
+    try {
+      setStateBusy();
+      String path = '/record/delete/$id';
+
+      var response = await ApiService().delete(path);
+      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(response);
+      setStateIdle();
+      if (modelResponseCommon.success == false) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

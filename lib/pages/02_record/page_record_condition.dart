@@ -30,7 +30,7 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
       bottomSheet: Container(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 30),
         child: DSButton(
-          press: () {
+          press: () async {
             switch (score.value.toInt()) {
               case 1:
                 condition = ConditionType.BD;
@@ -54,8 +54,15 @@ class _PageRecordConditionState extends State<PageRecordCondition> {
               endTime: context.read<RecordProvider>().startTime,
               startTime: context.read<RecordProvider>().endTime,
             );
-            context.read<RecordProvider>().createRecord(modelRequestCreateRecord);
-
+            var result = await context.read<RecordProvider>().createRecord(modelRequestCreateRecord);
+            if (result == false) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('기록 생성에 실패했습니다. 다시 시도해주세요.'),
+                ),
+              );
+              return;
+            }
             showInterstitialAd()
                 .then((value) => Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false));
           },
