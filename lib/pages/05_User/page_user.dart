@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
+import 'package:my_workout_diary_app/global/model/user/model_request_update.dart';
+import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
 import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
@@ -37,11 +39,11 @@ class PageUserView extends StatefulWidget {
 
 class _PageUserViewState extends State<PageUserView> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _tecName = TextEditingController();
+  final TextEditingController _textNameController = TextEditingController();
 
   @override
   void dispose() {
-    _tecName.dispose();
+    _textNameController.dispose();
     super.dispose();
   }
 
@@ -172,7 +174,7 @@ class _PageUserViewState extends State<PageUserView> {
                 SizedBox(height: 20),
                 Text('이름 수정하기', style: DSTextStyles.bold18Black),
                 DSInputField(
-                  controller: _tecName,
+                  controller: _textNameController,
                   hintText: "변경하실 성명을 입력해주세요",
                   warningMessage: "성명을 입력해주세요",
                   onEditingComplete: () => node.nextFocus(),
@@ -180,13 +182,23 @@ class _PageUserViewState extends State<PageUserView> {
                     if (value!.length > 10) {
                       return "10자 내로 입력해주세요.";
                     }
+                    if (value.isEmpty) {
+                      return "이름을 입력해주세요.";
+                    }
+                    return null;
                   },
                 ),
                 const SizedBox(height: 40),
                 DSButton(
                     text: '수정하기',
                     press: () async {
-                      await _modify();
+                      var result = await _modify();
+                      if (result == true) {
+                        _textNameController.clear();
+                        FocusScope.of(context).unfocus();
+                        await DSDialog.showOneButtonDialog(
+                            context: context, title: '완료', subTitle: '프로필이 수정되었어요 😀', btnText: '확인');
+                      }
                     },
                     type: ButtonType.normal,
                     width: SizeConfig.screenWidth),
@@ -212,8 +224,12 @@ class _PageUserViewState extends State<PageUserView> {
     }
   }
 
-  Future<void> _modify() async {
-    var result = await DSDialog.showTwoButtonDialog(
+  Future<bool?> _modify() async {
+    var result = _formKey.currentState?.validate();
+    if (result == false) {
+      return false;
+    }
+    result = await DSDialog.showTwoButtonDialog(
       context: context,
       title: '수정하기',
       subTitle: '프로필을 수정하시겠습니까?',
@@ -221,22 +237,16 @@ class _PageUserViewState extends State<PageUserView> {
       btn2Text: '네,',
     );
     if (result == false) {
-      return;
+      return false;
     }
 
-    result = await context.read<AuthProvider>().updateProfile();
+    ModelUser updatedMe = context.read<UserProvider>().me;
+    updatedMe.name = _textNameController.text;
+
+    result = await context.read<UserProvider>().updateProfile(updatedMe);
     if (result == false) {
-      return;
+      return false;
     }
+    return true;
   }
-
-  // _body() {
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //       children: [
-  //         Text(context.watch<UserProvider>().me.email ?? ''),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
