@@ -64,6 +64,32 @@ class ApiService {
     return response?.data;
   }
 
+  Future<dynamic> delete(String _path) async {
+    print('Api delete : url $_path start.');
+    var response;
+    try {
+      final token = await _getAuthorizationToken();
+      print(token);
+      _headers['Authorization'] = 'Bearer $token';
+      print(ModelConfig().serverBaseUrl);
+      response = await Dio()
+          .delete('${ModelConfig().serverBaseUrl}$_path',
+              options: Options(
+                headers: _headers,
+              ))
+          .timeout(Duration(seconds: 10));
+      print('Api delete : url ${ModelConfig().serverBaseUrl}$_path  done.');
+      print('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      DioExceptions.fromDioError(e).toString();
+      throw Exception();
+    } on SocketException {
+      print('No network');
+      throw Exception();
+    }
+    return response?.data;
+  }
+
   Future<dynamic> post(String _path, Map? map) async {
     print('Api post : url $_path start.');
 
