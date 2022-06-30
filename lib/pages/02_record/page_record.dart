@@ -213,18 +213,30 @@ class _PageMainViewState extends State<PageMainView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('$_workoutMinute', style: DSTextStyles.bold18WarmGrey),
-                      Text(' 분', style: DSTextStyles.regular12WarmGrey),
-                      SizedBox(width: 8),
-                      Text('$_workoutSecond', style: DSTextStyles.bold14WarmGrey),
-                      Text(' 초', style: DSTextStyles.regular12WarmGrey),
-                    ],
-                  ),
                   Text('${value[index].startTime.toTimestampString2()} ~ ${value[index].endTime.toTimestampString2()}',
-                      style: DSTextStyles.regular12WarmGrey),
+                      style: DSTextStyles.bold12Black),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(text: '$_workoutMinute', style: DSTextStyles.bold18Black),
+                        TextSpan(text: ' 분 ', style: DSTextStyles.bold14Black),
+                        TextSpan(text: '$_workoutSecond', style: DSTextStyles.bold18Black),
+                        TextSpan(text: ' 초 ', style: DSTextStyles.bold14Black),
+                        TextSpan(text: '운동했어요. ', style: DSTextStyles.bold14WarmGrey),
+                      ],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  // Row(
+                  //   crossAxisAlignment: CrossAxisAlignment.end,
+                  //   children: [
+                  //     Text('$_workoutMinute', style: DSTextStyles.bold18WarmGrey),
+                  //     Text(' 분', style: DSTextStyles.regular12WarmGrey),
+                  //     SizedBox(width: 8),
+                  //     Text('$_workoutSecond', style: DSTextStyles.bold14WarmGrey),
+                  //     Text(' 초', style: DSTextStyles.regular12WarmGrey),
+                  //   ],
+                  // ),
                 ],
               )),
         ],
