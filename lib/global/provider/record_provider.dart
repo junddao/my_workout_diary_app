@@ -7,7 +7,9 @@ import 'package:my_workout_diary_app/global/model/common/model_response_common.d
 import 'package:my_workout_diary_app/global/model/record/model_record.dart';
 import 'package:my_workout_diary_app/global/model/record/model_record_event.dart';
 import 'package:my_workout_diary_app/global/model/record/model_request_create_record.dart';
+import 'package:my_workout_diary_app/global/model/record/model_request_get_rankers.dart';
 import 'package:my_workout_diary_app/global/model/record/model_request_get_records.dart';
+import 'package:my_workout_diary_app/global/model/record/model_response_get_rankers.dart';
 import 'package:my_workout_diary_app/global/model/record/model_response_get_records.dart';
 import 'package:my_workout_diary_app/global/service/api_service.dart';
 import 'package:my_workout_diary_app/global/util/extension/datetime.dart';
@@ -39,6 +41,7 @@ class RecordProvider extends ParentProvider {
   DateTime? get selectedDay => _selectedDay;
 
   List<ModelRecord> records = [];
+  List<ModelRankers> rankers = [];
 
   void start() {
     _isStart = true;
@@ -163,6 +166,22 @@ class RecordProvider extends ParentProvider {
       ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(response);
       setStateIdle();
       if (modelResponseCommon.success == false) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> getTopRankers(ModelRequestGetRankers input) async {
+    try {
+      setStateBusy();
+      String path = '/record/get/rankers';
+
+      var response = await ApiService().post(path, input.toMap());
+      ModelResponseGetRankers modelResponseGetRankers = ModelResponseGetRankers.fromMap(response);
+      rankers = modelResponseGetRankers.data ?? [];
+      setStateIdle();
+
       return true;
     } catch (e) {
       return false;

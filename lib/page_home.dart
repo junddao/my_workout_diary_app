@@ -53,6 +53,18 @@ class _PageHomeViewState extends State<PageHomeView> {
         );
         Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
       }
+
+      // access token 만 사용하므로 로그인마다 신규 토큰을 발급받아서 갱신해줌.
+      String email = context.read<UserProvider>().me.email ?? '';
+      result = await context.read<AuthProvider>().signIn(email);
+      if (result == false) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('신규 토큰을 발급받지 못했습니다.'),
+          ),
+        );
+        Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+      }
     }
   }
 

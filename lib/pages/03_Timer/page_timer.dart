@@ -57,7 +57,6 @@ class _PageTimerViewState extends State<PageTimerView> {
     return AppBar(
       title: const Text('타이머'),
       centerTitle: false,
-      automaticallyImplyLeading: false,
     );
   }
 

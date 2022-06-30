@@ -36,7 +36,7 @@ class _PageRecordState extends State<PageRecord> {
         endDate: DateTime.now(),
       );
       await context.read<RecordProvider>().getRecords(requestGetRecords);
-
+      context.read<RecordProvider>().setSelectedDay(DateTime.now());
       context.read<RecordProvider>().getEvents();
       context.read<RecordProvider>().setSelectedEvents();
     });
@@ -80,6 +80,16 @@ class _PageMainViewState extends State<PageMainView> {
         return Center(child: CircularProgressIndicator());
       }
 
+      int totalWorkoutTime = 0;
+
+      provider.selectedEvents.forEach(
+        (element) {
+          totalWorkoutTime = totalWorkoutTime + element.workoutTime;
+        },
+      );
+      int totalWorkoutMinute = totalWorkoutTime ~/ 60;
+      int totalWorkoutSecond = totalWorkoutTime % 60;
+
       return SingleChildScrollView(
         child: Column(
           children: [
@@ -93,78 +103,79 @@ class _PageMainViewState extends State<PageMainView> {
             ),
             const SizedBox(height: 8.0),
             Divider(),
-            SizedBox(
-              // height: 200,
-              child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: provider.selectedEvents.length,
-                itemBuilder: (context, index) {
-                  var item = provider.selectedEvents[index];
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(text: '이날은 ', style: DSTextStyles.bold14WarmGrey),
+                        TextSpan(text: '$totalWorkoutMinute', style: DSTextStyles.bold18Black),
+                        TextSpan(text: ' 분 ', style: DSTextStyles.bold14Black),
+                        TextSpan(text: '$totalWorkoutSecond', style: DSTextStyles.bold18Black),
+                        TextSpan(text: ' 초 ', style: DSTextStyles.bold14Black),
+                        TextSpan(text: '운동했어요. ', style: DSTextStyles.bold14WarmGrey),
+                      ],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(
+                  // height: 200,
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: provider.selectedEvents.length,
+                    itemBuilder: (context, index) {
+                      var item = provider.selectedEvents[index];
 
-                  return Slidable(
-                      key: Key(index.toString()),
-                      groupTag: '0',
-                      endActionPane: ActionPane(
-                        extentRatio: 0.2,
-                        motion: const ScrollMotion(),
-                        key: Key(item.id),
-                        children: [
-                          SlidableAction(
-                            // An action can be bigger than the others.
-                            onPressed: (slidableContext) async {
-                              int year = DateTime.now().year;
-                              int month = DateTime.now().month;
-                              final startDate = DateTime(year, month, 1);
-                              ModelRequestGetRecords requestGetRecords = ModelRequestGetRecords(
-                                startDate: startDate,
-                                endDate: DateTime.now(),
-                              );
-                              var results = Future.wait([
-                                context.read<RecordProvider>().deleteRecord(item.id),
-                                context.read<RecordProvider>().getRecords(requestGetRecords)
-                              ]);
+                      return Slidable(
+                          key: Key(index.toString()),
+                          groupTag: '0',
+                          endActionPane: ActionPane(
+                            extentRatio: 0.2,
+                            motion: const ScrollMotion(),
+                            key: Key(item.id),
+                            children: [
+                              SlidableAction(
+                                // An action can be bigger than the others.
+                                onPressed: (slidableContext) async {
+                                  int year = DateTime.now().year;
+                                  int month = DateTime.now().month;
+                                  final startDate = DateTime(year, month, 1);
+                                  ModelRequestGetRecords requestGetRecords = ModelRequestGetRecords(
+                                    startDate: startDate,
+                                    endDate: DateTime.now(),
+                                  );
+                                  var results = Future.wait([
+                                    context.read<RecordProvider>().deleteRecord(item.id),
+                                    context.read<RecordProvider>().getRecords(requestGetRecords)
+                                  ]);
 
-                              results.then((value) {
-                                if (!value.contains(false)) {
-                                  provider.getEvents();
-                                  provider.setSelectedEvents();
-                                }
-                              });
-
-                              // if (result == false) {
-                              //   ScaffoldMessenger.of(context)
-                              //       .showSnackBar(const SnackBar(content: Text('삭제에 실패했습니다. 다시 시도해 주세요.')));
-                              //   return;
-                              // }
-
-                              // int year = DateTime.now().year;
-                              // int month = DateTime.now().month;
-                              // final startDate = DateTime(year, month, 1);
-                              // ModelRequestGetRecords requestGetRecords = ModelRequestGetRecords(
-                              //   startDate: startDate,
-                              //   endDate: DateTime.now(),
-                              // );
-                              // result = await context.read<RecordProvider>().getRecords(requestGetRecords);
-                              // if (result == false) {
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //       const SnackBar(content: Text('기록 갱신이 안됐어요. 다른 페이지로 이동후 다시 확인하세요..')));
-                              //   return;
-                              // }
-                              // ScaffoldMessenger.of(context).showSnackBar(
-                              //   const SnackBar(content: Text('잘 지워졌어요.😃')),
-                              // );
-                            },
-                            flex: 1,
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            label: "삭제",
+                                  results.then((value) {
+                                    if (!value.contains(false)) {
+                                      provider.getEvents();
+                                      provider.setSelectedEvents();
+                                    }
+                                  });
+                                },
+                                flex: 1,
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                label: "삭제",
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: _buildRecordListItem(provider.selectedEvents, index));
-                },
-              ),
+                          child: _buildRecordListItem(provider.selectedEvents, index));
+                    },
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 60),
           ],
@@ -202,18 +213,30 @@ class _PageMainViewState extends State<PageMainView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('$_workoutMinute', style: DSTextStyles.bold18WarmGrey),
-                      Text(' 분', style: DSTextStyles.regular12WarmGrey),
-                      SizedBox(width: 8),
-                      Text('$_workoutSecond', style: DSTextStyles.bold14WarmGrey),
-                      Text(' 초', style: DSTextStyles.regular12WarmGrey),
-                    ],
-                  ),
                   Text('${value[index].startTime.toTimestampString2()} ~ ${value[index].endTime.toTimestampString2()}',
-                      style: DSTextStyles.regular12WarmGrey),
+                      style: DSTextStyles.bold12Black),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(text: '$_workoutMinute', style: DSTextStyles.bold18Black),
+                        TextSpan(text: ' 분 ', style: DSTextStyles.bold14Black),
+                        TextSpan(text: '$_workoutSecond', style: DSTextStyles.bold18Black),
+                        TextSpan(text: ' 초 ', style: DSTextStyles.bold14Black),
+                        TextSpan(text: '운동했어요. ', style: DSTextStyles.bold14WarmGrey),
+                      ],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  // Row(
+                  //   crossAxisAlignment: CrossAxisAlignment.end,
+                  //   children: [
+                  //     Text('$_workoutMinute', style: DSTextStyles.bold18WarmGrey),
+                  //     Text(' 분', style: DSTextStyles.regular12WarmGrey),
+                  //     SizedBox(width: 8),
+                  //     Text('$_workoutSecond', style: DSTextStyles.bold14WarmGrey),
+                  //     Text(' 초', style: DSTextStyles.regular12WarmGrey),
+                  //   ],
+                  // ),
                 ],
               )),
         ],
