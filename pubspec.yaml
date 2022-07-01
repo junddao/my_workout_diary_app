@@ -49,6 +49,7 @@ dependencies:
   font_awesome_flutter: ^10.1.0
   google_mobile_ads: ^1.3.0
   heic_to_jpg: ^0.2.0
+  image_picker: ^0.8.5+3
   intl: ^0.17.0
   just_audio: ^0.9.24
   kakao_flutter_sdk: ^1.1.1

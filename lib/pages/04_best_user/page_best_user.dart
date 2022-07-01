@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -5,6 +6,7 @@ import 'package:my_workout_diary_app/global/enum/view_state.dart';
 import 'package:my_workout_diary_app/global/model/record/model_request_get_rankers.dart';
 import 'package:my_workout_diary_app/global/model/record/model_response_get_rankers.dart';
 import 'package:my_workout_diary_app/global/provider/record_provider.dart';
+import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:provider/provider.dart';
@@ -61,14 +63,23 @@ class _PageBestUserState extends State<PageBestUser> {
             children: [
               Text('다음달 운동왕은 당신이에요! 😃', style: DSTextStyles.bold18Black),
               SizedBox(height: 18),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return _buildRankListItem(rankers, index);
-                },
-                itemCount: provider.rankers.length,
-              ),
+              provider.rankers.isEmpty
+                  ? Column(
+                      children: [
+                        SizedBox(height: SizeConfig.screenHeight * 0.3),
+                        Center(
+                          child: Text('이번달 운동을 시작한 사람이 없어요. 😭'),
+                        ),
+                      ],
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return _buildRankListItem(rankers, index);
+                      },
+                      itemCount: provider.rankers.length,
+                    ),
             ],
           ),
         ),
@@ -81,7 +92,9 @@ class _PageBestUserState extends State<PageBestUser> {
     int hours = rankers[index].totalWorkoutTime ~/ (60 * 60);
     int minutes = (rankers[index].totalWorkoutTime - hours * 3600) ~/ 60;
     int seconds = rankers[index].totalWorkoutTime - (hours * 3600) - (minutes * 60);
-
+    String userImage = rankers[index].profileImage == null || rankers[index].profileImage!.isEmpty
+        ? defaultUser
+        : rankers[index].profileImage!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Container(
@@ -97,8 +110,9 @@ class _PageBestUserState extends State<PageBestUser> {
               width: 70,
               height: 70,
               child: ClipOval(
-                child: Image.asset('assets/images/default_profile.png', fit: BoxFit.cover),
-              ),
+                  child: CachedNetworkImage(
+                imageUrl: userImage,
+              )),
             ),
             SizedBox(width: 12),
             Expanded(

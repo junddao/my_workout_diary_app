@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
@@ -40,6 +41,7 @@ class PageUserView extends StatefulWidget {
 class _PageUserViewState extends State<PageUserView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textNameController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void dispose() {
@@ -108,49 +110,51 @@ class _PageUserViewState extends State<PageUserView> {
                 SizedBox(height: 20),
                 Row(
                   children: [
-                    // InkWell(
-                    //   onTap: () async {},
-                    //   child: Container(
-                    //     height: 80,
-                    //     width: 80,
-                    //     child: Stack(
-                    //       children: [
-                    //         ClipRRect(
-                    //             borderRadius: BorderRadius.circular(300),
-                    //             child: CachedNetworkImage(
-                    //               imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
-                    //               fit: BoxFit.cover,
-                    //               height: 80,
-                    //               width: 80,
-                    //             )),
-                    //         Positioned(
-                    //           top: 60,
-                    //           left: 60,
-                    //           child: Container(
-                    //             alignment: Alignment.center,
-                    //             height: 20,
-                    //             width: 20,
-                    //             decoration: BoxDecoration(
-                    //                 color: DSColors.white,
-                    //                 borderRadius: BorderRadius.circular(16),
-                    //                 border: Border.all(width: 1, color: DSColors.grey_06)),
-                    //             child: Row(
-                    //               mainAxisAlignment: MainAxisAlignment.center,
-                    //               children: const [
-                    //                 Icon(
-                    //                   Icons.camera_alt,
-                    //                   color: DSColors.grey_06,
-                    //                   size: 16,
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    // SizedBox(width: 18),
+                    InkWell(
+                      onTap: () async {
+                        final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                      },
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(300),
+                                child: CachedNetworkImage(
+                                  imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
+                                  fit: BoxFit.cover,
+                                  height: 80,
+                                  width: 80,
+                                )),
+                            Positioned(
+                              top: 60,
+                              left: 60,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                    color: DSColors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(width: 1, color: DSColors.grey_06)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.camera_alt,
+                                      color: DSColors.grey_06,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 18),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

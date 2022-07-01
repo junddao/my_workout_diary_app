@@ -30,7 +30,7 @@ class _PageRecordState extends State<PageRecord> {
     Future.microtask(() async {
       int year = DateTime.now().year;
       int month = DateTime.now().month;
-      final startDate = DateTime(year, month, 1);
+      final startDate = DateTime(year - 1, month, 1);
       ModelRequestGetRecords requestGetRecords = ModelRequestGetRecords(
         startDate: startDate,
         endDate: DateTime.now(),

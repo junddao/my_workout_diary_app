@@ -5,6 +5,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:my_workout_diary_app/global/enum/socail_type.dart';
 import 'package:my_workout_diary_app/global/model/common/model_response_common.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
+import 'package:my_workout_diary_app/global/model/user/model_request_kakao_sign_in.dart';
 import 'package:my_workout_diary_app/global/model/user/model_request_sign_in.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_sign_in.dart';
@@ -36,12 +37,14 @@ class AuthProvider extends ParentProvider {
       kakao.User? kakaoUser = await kakao.UserApi.instance.me();
 
       // server에서 custom token 을 얻는 부분
-      final customToken = await createCustomToken({
-        'uid': kakaoUser.id.toString(),
-        'name': kakaoUser.kakaoAccount!.profile!.nickname ?? '',
-        'email': kakaoUser.kakaoAccount!.email ?? '',
-        'photoURL': kakaoUser.kakaoAccount!.profile!.profileImageUrl ?? '',
-      });
+
+      ModelRequestKakaoSignIn modelRequestKakaoSignIn = ModelRequestKakaoSignIn(
+        uid: kakaoUser.id.toString(),
+        name: kakaoUser.kakaoAccount!.profile!.nickname ?? '',
+        email: kakaoUser.kakaoAccount!.email ?? '',
+        profileImage: kakaoUser.kakaoAccount!.profile!.profileImageUrl ?? '',
+      );
+      final customToken = await createCustomToken(modelRequestKakaoSignIn.toMap());
       if (customToken == null) {
         logger.d('get customToken error');
         return false;
@@ -94,6 +97,19 @@ class AuthProvider extends ParentProvider {
     }
   }
 
+  Future<bool> signInWithApple(Map<String, dynamic> map) async {
+    try {
+      const String url = '/user/apple';
+      Map<String, dynamic> _data = await ApiService().postWithOutToken(url, map);
+      ModelResponseSignIn modelResponseSignIn = ModelResponseSignIn.fromMap(_data);
+      ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
+      await ModelSharedPreferences.writeToken(modelSignIn.accessToken);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> appleLogin() async {
     setStateBusy();
     try {
@@ -103,7 +119,13 @@ class AuthProvider extends ParentProvider {
         logger.d('get firebase user error');
       }
       // firebase 유저 가져와서 서버에 로그인 합시다.
-      bool result = await signIn(fbUser!.uid);
+      Map<String, dynamic> map = {
+        'uid': fbUser?.uid.toString(),
+        'name': fbUser?.displayName ?? '',
+        'email': fbUser?.email ?? '',
+        'photoURL': fbUser?.photoURL ?? '',
+      };
+      bool result = await signInWithApple(map);
       if (result == false) {
         return false;
       }
@@ -122,13 +144,13 @@ class AuthProvider extends ParentProvider {
     try {
       setStateBusy();
       bool result = false;
-
-      if (loginSocial == SocialType.kakao) {
-        result = await _kakaoLogin.logout();
-      }
-      if (result == false) {
-        return false;
-      }
+      await _kakaoLogin.logout();
+      // if (loginSocial == SocialType.kakao) {
+      //   result = await _kakaoLogin.logout();
+      // }
+      // if (result == false) {
+      //   return false;
+      // }
 
       loginSocial = SocialType.none;
       await FirebaseAuth.instance.signOut();
