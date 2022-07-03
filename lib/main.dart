@@ -9,6 +9,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:my_workout_diary_app/firebase_options.dart';
 import 'package:my_workout_diary_app/global/model/model_config.dart';
 import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
+import 'package:my_workout_diary_app/global/provider/file_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
 import 'package:my_workout_diary_app/global/provider/record_provider.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => RecordProvider()),
+        ChangeNotifierProvider(create: (_) => FileProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

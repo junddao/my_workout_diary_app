@@ -11,6 +11,7 @@ import 'package:my_workout_diary_app/global/model/user/model_request_update.dart
 import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
 import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
+import 'package:my_workout_diary_app/global/provider/file_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
@@ -113,6 +114,35 @@ class _PageUserViewState extends State<PageUserView> {
                     InkWell(
                       onTap: () async {
                         final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                        if (image == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('이미지를 불러오지 못했어요. 다시 시도해 주세요.'),
+                            ),
+                          );
+                          return;
+                        }
+                        var serverImagePath = await context.read<FileProvider>().uploadFile([File(image.path)]);
+                        if (serverImagePath == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('이미지를 서버에 저장하지 못했어요. 다시 시도해 주세요.'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        ModelUser updatedMe = context.read<UserProvider>().me;
+                        updatedMe.profileImage = serverImagePath;
+                        var result = await context.read<UserProvider>().updateProfile(updatedMe);
+                        if (result == false) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('프로필 변경에 실패했어요. 다시 시도해 주세요.'),
+                            ),
+                          );
+                          return;
+                        }
                       },
                       child: Container(
                         height: 80,

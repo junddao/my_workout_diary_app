@@ -112,6 +112,7 @@ class _PageBestUserState extends State<PageBestUser> {
               child: ClipOval(
                   child: CachedNetworkImage(
                 imageUrl: userImage,
+                fit: BoxFit.cover,
               )),
             ),
             SizedBox(width: 12),
