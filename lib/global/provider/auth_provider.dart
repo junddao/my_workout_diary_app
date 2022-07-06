@@ -101,9 +101,7 @@ class AuthProvider extends ParentProvider {
     try {
       const String url = '/user/apple';
       Map<String, dynamic> _data = await ApiService().postWithOutToken(url, map);
-      ModelResponseSignIn modelResponseSignIn = ModelResponseSignIn.fromMap(_data);
-      ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
-      await ModelSharedPreferences.writeToken(modelSignIn.accessToken);
+      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(_data);
       return true;
     } catch (e) {
       return false;
@@ -123,9 +121,15 @@ class AuthProvider extends ParentProvider {
         'uid': fbUser?.uid.toString(),
         'name': fbUser?.displayName ?? '',
         'email': fbUser?.email ?? '',
-        'photoURL': fbUser?.photoURL ?? '',
+        'profileImage': fbUser?.photoURL ?? '',
       };
       bool result = await signInWithApple(map);
+      if (result == false) {
+        return false;
+      }
+
+      // firebase 유저 가져와서 서버에 로그인 합시다.
+      result = await signIn(fbUser!.email!);
       if (result == false) {
         return false;
       }
