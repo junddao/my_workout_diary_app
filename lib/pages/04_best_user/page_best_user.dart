@@ -106,6 +106,8 @@ class _PageBestUserState extends State<PageBestUser> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('${index + 1}위', style: DSTextStyles.bold14Black),
+            SizedBox(width: 8),
             SizedBox(
               width: 70,
               height: 70,
