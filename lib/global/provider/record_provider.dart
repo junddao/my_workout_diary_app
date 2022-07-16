@@ -28,9 +28,11 @@ class RecordProvider extends ParentProvider {
 
   DateTime _startTime = DateTime.now();
   DateTime _endTime = DateTime.now();
+  DateTime _passedTime = DateTime.now();
 
   DateTime get startTime => _startTime;
   DateTime get endTime => _endTime;
+  DateTime get passedTime => _passedTime;
 
   LinkedHashMap<DateTime, List<ModelRecord>>? _kEvents;
   List<ModelRecord> _selectedEvents = [];
@@ -48,7 +50,7 @@ class RecordProvider extends ParentProvider {
     _startTime = DateTime.now();
     _timer = Timer.periodic(Duration(milliseconds: 100), (timer) async {
       _time++;
-      print(_time);
+
       notifyListeners();
     });
   }
@@ -65,6 +67,12 @@ class RecordProvider extends ParentProvider {
     _recordTime = _time;
     _timer.cancel();
     _time = 0;
+    notifyListeners();
+  }
+
+  void setPassedTime() {
+    _passedTime = DateTime.now();
+    _time = passedTime.difference(startTime).inSeconds.toDouble() * 10;
     notifyListeners();
   }
 

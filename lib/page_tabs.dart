@@ -9,6 +9,7 @@ import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:my_workout_diary_app/global/util/ad_helper.dart';
+import 'package:my_workout_diary_app/global/util/util.dart';
 import 'package:my_workout_diary_app/pages/02_record/page_record.dart';
 import 'package:my_workout_diary_app/pages/03_Timer/page_timer.dart';
 import 'package:my_workout_diary_app/pages/04_best_user/page_best_user.dart';
@@ -37,7 +38,7 @@ class PageTabView extends StatefulWidget {
   State<PageTabView> createState() => _PageTabViewState();
 }
 
-class _PageTabViewState extends State<PageTabView> {
+class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   final List _pages = [
     PageRecord(),
     Container(),
@@ -50,8 +51,32 @@ class _PageTabViewState extends State<PageTabView> {
   int _selectedIndex = 0;
   @override
   void initState() {
-    createInterstitialAd();
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+    createInterstitialAd();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        logger.d('resume');
+        context.read<RecordProvider>().setPassedTime();
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.paused:
+        break;
+    }
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
+import 'package:my_workout_diary_app/global/enum/view_state.dart';
 import 'package:my_workout_diary_app/global/model/user/model_request_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
@@ -144,45 +145,7 @@ class _PageUserViewState extends State<PageUserView> {
                           return;
                         }
                       },
-                      child: Container(
-                        height: 80,
-                        width: 80,
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(300),
-                                child: CachedNetworkImage(
-                                  imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
-                                  fit: BoxFit.cover,
-                                  height: 80,
-                                  width: 80,
-                                )),
-                            Positioned(
-                              top: 60,
-                              left: 60,
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                    color: DSColors.white,
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(width: 1, color: DSColors.grey_06)),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.camera_alt,
-                                      color: DSColors.grey_06,
-                                      size: 16,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      child: getProfileImage(),
                     ),
                     SizedBox(width: 18),
                     Column(
@@ -241,6 +204,53 @@ class _PageUserViewState extends State<PageUserView> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget getProfileImage() {
+    if (context.read<UserProvider>().state == ViewState.Busy) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Container(
+      height: 80,
+      width: 80,
+      child: Stack(
+        children: [
+          ClipRRect(
+              borderRadius: BorderRadius.circular(300),
+              child: CachedNetworkImage(
+                imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
+                fit: BoxFit.cover,
+                height: 80,
+                width: 80,
+              )),
+          Positioned(
+            top: 60,
+            left: 60,
+            child: Container(
+              alignment: Alignment.center,
+              height: 20,
+              width: 20,
+              decoration: BoxDecoration(
+                  color: DSColors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(width: 1, color: DSColors.grey_06)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.camera_alt,
+                    color: DSColors.grey_06,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
