@@ -155,5 +155,7 @@ class _PageEmailSignUpState extends State<PageEmailSignUp> {
     );
 
     context.read<AuthProvider>().signUp(modelRequestSignUp.toMap());
+
+    // firebase login 기능 추가 필요
   }
 }
