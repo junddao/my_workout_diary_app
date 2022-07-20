@@ -5,8 +5,11 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:my_workout_diary_app/global/enum/socail_type.dart';
 import 'package:my_workout_diary_app/global/model/common/model_response_common.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
+import 'package:my_workout_diary_app/global/model/user/model_request_get_token.dart';
 import 'package:my_workout_diary_app/global/model/user/model_request_kakao_sign_in.dart';
 import 'package:my_workout_diary_app/global/model/user/model_request_sign_in.dart';
+import 'package:my_workout_diary_app/global/model/user/model_request_sign_up.dart';
+import 'package:my_workout_diary_app/global/model/user/model_response_get_token.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_sign_in.dart';
 import 'package:my_workout_diary_app/global/model/user/model_user.dart';
@@ -57,7 +60,7 @@ class AuthProvider extends ParentProvider {
         logger.d('get firebase user error');
       }
       // firebase 유저 가져와서 서버에 로그인 합시다.
-      result = await signIn(fbUser!.email!);
+      result = await signIn(fbUser!.email!, 'kakao');
       if (result == false) {
         return false;
       }
@@ -83,14 +86,49 @@ class AuthProvider extends ParentProvider {
     }
   }
 
-  Future<bool> signIn(String email) async {
+  Future<bool> signIn(String email, String password) async {
     try {
-      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email);
+      setStateBusy();
+      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email, password: password);
       const String url = '/user/signin';
       Map<String, dynamic> _data = await ApiService().postWithOutToken(url, modelRequestSignIn.toMap());
       ModelResponseSignIn modelResponseSignIn = ModelResponseSignIn.fromMap(_data);
       ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
       await ModelSharedPreferences.writeToken(modelSignIn.accessToken);
+      setStateIdle();
+      return true;
+    } catch (e) {
+      setStateIdle();
+      return false;
+    }
+  }
+
+  Future<bool> signUp(Map<String, dynamic> map) async {
+    try {
+      ModelRequestSignUp modelRequestSignUp = ModelRequestSignUp.fromMap(map);
+      const String url = '/user/signup';
+      Map<String, dynamic> _data = await ApiService().postWithOutToken(url, modelRequestSignUp.toMap());
+      ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(_data);
+      if (modelResponseCommon.success == false) {
+        setStateIdle();
+        return false;
+      }
+      setStateIdle();
+      return true;
+    } catch (e) {
+      setStateIdle();
+      return false;
+    }
+  }
+
+  Future<bool> getToken(String email) async {
+    try {
+      ModelRequestGetToken modelRequestGetToken = ModelRequestGetToken(email: email);
+      const String url = '/user/get/token';
+      Map<String, dynamic> _data = await ApiService().postWithOutToken(url, modelRequestGetToken.toMap());
+      ModelResponseGetToken modelResponseGetToken = ModelResponseGetToken.fromMap(_data);
+      ModelGetToken modelGetToken = modelResponseGetToken.data!.first;
+      await ModelSharedPreferences.writeToken(modelGetToken.accessToken);
       return true;
     } catch (e) {
       return false;
@@ -99,11 +137,18 @@ class AuthProvider extends ParentProvider {
 
   Future<bool> signInWithApple(Map<String, dynamic> map) async {
     try {
+      setStateBusy();
       const String url = '/user/apple';
       Map<String, dynamic> _data = await ApiService().postWithOutToken(url, map);
       ModelResponseCommon modelResponseCommon = ModelResponseCommon.fromMap(_data);
+      if (modelResponseCommon.success == false) {
+        setStateIdle();
+        return false;
+      }
+      setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
@@ -129,7 +174,7 @@ class AuthProvider extends ParentProvider {
       }
 
       // firebase 유저 가져와서 서버에 로그인 합시다.
-      result = await signIn(fbUser!.email!);
+      result = await signIn(fbUser!.email!, 'apple');
       if (result == false) {
         return false;
       }

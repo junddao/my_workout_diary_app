@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/page_tabs.dart';
+import 'package:my_workout_diary_app/pages/01_login/page_email_sign_up.dart';
 import 'package:my_workout_diary_app/pages/01_login/page_login.dart';
 import 'package:my_workout_diary_app/pages/02_record/page_record_condition.dart';
 import 'package:my_workout_diary_app/pages/03_Timer/page_play.dart';
@@ -20,6 +21,11 @@ class Routers {
       case 'PageLogin':
         return CupertinoPageRoute(
           builder: (_) => PageLogin(),
+          settings: settings,
+        );
+      case 'PageEmailSignUp':
+        return CupertinoPageRoute(
+          builder: (_) => PageEmailSignUp(),
           settings: settings,
         );
       case 'PagePlay':

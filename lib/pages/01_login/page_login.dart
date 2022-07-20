@@ -3,7 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutterfire_ui/auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_workout_diary_app/global/components/ds_button.dart';
+import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
+import 'package:my_workout_diary_app/global/components/plain_text_field.component.dart';
 import 'package:my_workout_diary_app/global/enum/view_state.dart';
 import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
@@ -34,9 +38,23 @@ class PageLoginView extends StatefulWidget {
 }
 
 class _PageLoginViewState extends State<PageLoginView> {
+  final _formKey = GlobalKey<FormState>();
+  late final FocusScopeNode node;
   bool isLoading = false;
+
+  final TextEditingController _tecEmail = TextEditingController();
+  final TextEditingController _tecPassword = TextEditingController();
+
+  @override
+  void dispose() {
+    _tecEmail.dispose();
+    _tecPassword.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    node = FocusScope.of(context);
     return Scaffold(
       body: _body(),
     );
@@ -55,21 +73,22 @@ class _PageLoginViewState extends State<PageLoginView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Expanded(
-              flex: 5,
+              flex: 2,
               child: Center(
                 child: Text('마이 헬스 다이어리', style: DSTextStyles.bold24Grey06),
               ),
             ),
             Expanded(
-              flex: 5,
+              flex: 8,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 20.0),
+                  _buildEmailLogin(),
                   _buildKakaoLogin(),
                   Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
                   Platform.isIOS ? _buildAppleLogin() : const SizedBox.shrink(),
                   const SizedBox(height: 40.0),
-                  _buildGuestLogin(),
                 ],
               ),
             ),
@@ -77,6 +96,96 @@ class _PageLoginViewState extends State<PageLoginView> {
         ),
       );
     });
+  }
+
+  Widget _buildEmailLogin() {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // const SizedBox(height: 100),
+            // Hero(
+            //   tag: 'logo',
+            //   child: Image.asset(
+            //     "assets/icons/ic_logo_text.png",
+            //     width: 209,
+            //     height: 50,
+            //   ),
+            // ),
+            const SizedBox(height: 80),
+            PlainTextField(
+              controller: _tecEmail,
+              hintText: '이메일을 입력하세요.',
+              textInputAction: TextInputAction.next,
+              onChanged: (value) {},
+              onEditingComplete: () => node.nextFocus(),
+              validator: (val) {
+                return val == null || !RegExp(Validation.emailRegex).hasMatch(val) ? '이메일 형식이 잘못되었습니다.' : null;
+              },
+            ),
+            const SizedBox(height: 8),
+            PlainTextField(
+              controller: _tecPassword,
+              hintText: '비밀번호를 입력하세요.',
+              showSecure: true,
+              isSecure: true,
+              onChanged: (value) {},
+              onEditingComplete: () => onLogin(),
+              validator: (value) {
+                return value == null || value.length > 5 ? null : '비밀번호는 6자리 이상만 가능합니다.';
+              },
+            ),
+            const SizedBox(height: 8),
+            // Container(
+            //   alignment: Alignment.centerRight,
+            //   padding: EdgeInsets.symmetric(horizontal: 20),
+            //   child: InkWell(
+            //     onTap: () {
+            //       logger.i("TODO");
+            //       // TODO
+            //       // Navigator.push(
+            //       //   context,
+            //       //   MaterialPageRoute(
+            //       //     builder: (context) {
+            //       //       return LoginScreen();
+            //       //     },
+            //       //   ),
+            //       // );
+            //     },
+            //     child: Text(
+            //       LocaleKeys.forgot_password.tr(),
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 8),
+
+            const SizedBox(height: 48),
+            DSButton(
+              width: SizeConfig.screenWidth - 40,
+              text: '로그인',
+              press: () {
+                onLogin();
+              },
+            ),
+            DSButton(
+              width: SizeConfig.screenWidth - 40,
+              type: ButtonType.transparent,
+              text: '회원가입',
+              press: () => Navigator.of(context).pushNamed('PageEmailSignUp'),
+            ),
+            Divider(color: DSColors.divider),
+
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
   }
 
   _buildAppleLogin() {
@@ -152,7 +261,7 @@ class _PageLoginViewState extends State<PageLoginView> {
         if (!result) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('유저 정보를 가져오지∞ 못했습니다. 다시 시도해 주세요.'),
+              content: Text('유저 정보를 가져오지 못했습니다. 다시 시도해 주세요.'),
             ),
           );
           return;
@@ -192,18 +301,5 @@ class _PageLoginViewState extends State<PageLoginView> {
     );
   }
 
-  _buildGuestLogin() {
-    return Container(
-      width: double.infinity,
-      height: 50,
-      child: Center(
-        child: InkWell(
-          onTap: () async {
-            Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
-          },
-          child: const Text('Guest로 둘러보기', style: DSTextStyles.regular12BlackUnderLine),
-        ),
-      ),
-    );
-  }
+  onLogin() {}
 }

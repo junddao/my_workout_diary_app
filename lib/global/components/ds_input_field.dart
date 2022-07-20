@@ -17,6 +17,7 @@ class DSInputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final TextAlign? textAlign;
+  final TextInputAction? textInputAction;
   const DSInputField({
     Key? key,
     this.controller,
@@ -32,6 +33,7 @@ class DSInputField extends StatelessWidget {
     this.keyboardType,
     this.inputFormatters,
     this.textAlign,
+    this.textInputAction,
   }) : super(key: key);
 
   @override
@@ -57,6 +59,7 @@ class DSInputField extends StatelessWidget {
       minLines: minLines,
       maxLines: maxLines,
       onEditingComplete: onEditingComplete,
+      textInputAction: textInputAction,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       textAlign: textAlign ?? TextAlign.start,

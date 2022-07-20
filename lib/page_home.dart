@@ -56,7 +56,8 @@ class _PageHomeViewState extends State<PageHomeView> {
 
       // access token 만 사용하므로 로그인마다 신규 토큰을 발급받아서 갱신해줌.
       String email = context.read<UserProvider>().me.email ?? '';
-      result = await context.read<AuthProvider>().signIn(email);
+
+      result = await context.read<AuthProvider>().getToken(email);
       if (result == false) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
