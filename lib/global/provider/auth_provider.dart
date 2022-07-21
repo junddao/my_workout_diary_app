@@ -17,6 +17,7 @@ import 'package:my_workout_diary_app/global/provider/parent_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/service/api_service.dart';
 import 'package:my_workout_diary_app/global/service/apple_login.dart';
+import 'package:my_workout_diary_app/global/service/email_login.dart';
 import 'package:my_workout_diary_app/global/service/kakao_login.dart';
 import 'package:my_workout_diary_app/global/util/util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthProvider extends ParentProvider {
   final KakaoLogin _kakaoLogin = KakaoLogin();
   final AppleLogin _appleLogin = AppleLogin();
+  final EmailLogin _emailLogin = EmailLogin();
   SocialType loginSocial = SocialType.none;
 
   Future<bool> kakaoLogin() async {
@@ -181,6 +183,71 @@ class AuthProvider extends ParentProvider {
 
       logger.d('apple sign in success');
       loginSocial = SocialType.apple;
+      setStateIdle();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> emailSignUp({required email, required password, required name}) async {
+    setStateBusy();
+    try {
+      // firebase 로그인 또는 가입 하고
+      User? fbUser = await _emailLogin.signUp(email: email, password: password);
+
+      if (fbUser == null) {
+        logger.d('get firebase user error');
+      }
+
+      ModelRequestSignUp modelRequestSignUp = ModelRequestSignUp(
+        uid: fbUser?.uid.toString() ?? '',
+        email: fbUser?.email ?? '',
+        social: 'email',
+        name: name,
+        password: password,
+        profileImage: '',
+      );
+
+      // 서버에 가입 호출
+      bool result = await signUp(modelRequestSignUp.toMap());
+      if (result == false) {
+        return false;
+      }
+
+      // firebase 유저 가져와서 서버에 로그인 합시다.
+      result = await signIn(fbUser!.email!, password);
+      if (result == false) {
+        return false;
+      }
+
+      logger.d('email sign in success');
+      loginSocial = SocialType.email;
+      setStateIdle();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> emailSignIn({required email, required password}) async {
+    setStateBusy();
+    try {
+      // firebase 로그인 또는 가입 하고
+      User? fbUser = await _emailLogin.signIn(email: email, password: password);
+
+      if (fbUser == null) {
+        logger.d('get firebase user error');
+      }
+
+      // 서버에 가입 호출
+      bool result = await signIn(fbUser?.email ?? '', password);
+      if (result == false) {
+        return false;
+      }
+
+      logger.d('email sign in success');
+      loginSocial = SocialType.email;
       setStateIdle();
       return true;
     } catch (e) {

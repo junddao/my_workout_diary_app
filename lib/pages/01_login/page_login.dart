@@ -135,7 +135,7 @@ class _PageLoginViewState extends State<PageLoginView> {
               onChanged: (value) {},
               onEditingComplete: () => onLogin(),
               validator: (value) {
-                return value == null || value.length > 5 ? null : '비밀번호는 6자리 이상만 가능합니다.';
+                return value == null || value.length > 3 ? null : '비밀번호는 4자리 이상만 가능합니다.';
               },
             ),
             const SizedBox(height: 8),
@@ -301,5 +301,13 @@ class _PageLoginViewState extends State<PageLoginView> {
     );
   }
 
-  onLogin() {}
+  onLogin() async {
+    var result = await context.read<AuthProvider>().emailSignIn(email: _tecEmail, password: _tecPassword);
+    if (result == true) {
+      Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('로그인 실패')));
+      return;
+    }
+  }
 }

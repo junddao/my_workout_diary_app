@@ -141,21 +141,22 @@ class _PageEmailSignUpState extends State<PageEmailSignUp> {
           );
   }
 
-  _signUp() {
+  _signUp() async {
     if (_formKey.currentState?.validate() != true) {
       return;
     }
-    ModelRequestSignUp modelRequestSignUp = ModelRequestSignUp(
-      uid: '',
-      email: _tecEmail.text,
-      social: 'email',
-      name: _tecNickname.text,
-      password: _tecPassword.text,
-      profileImage: '',
-    );
 
-    context.read<AuthProvider>().signUp(modelRequestSignUp.toMap());
+    bool result = await context.read<AuthProvider>().emailSignUp(
+          email: _tecEmail.text,
+          password: _tecPassword.text,
+          name: _tecNickname.text,
+        );
 
-    // firebase login 기능 추가 필요
+    if (result == true) {
+      Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('로그인 실패')));
+      return;
+    }
   }
 }
