@@ -1,18 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutterfire_ui/auth.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/plain_text_field.component.dart';
 import 'package:my_workout_diary_app/global/enum/view_state.dart';
-import 'package:my_workout_diary_app/global/model/user/model_request_sign_up.dart';
 import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
 import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:my_workout_diary_app/global/util/util.dart';
-import 'package:my_workout_diary_app/page_tabs.dart';
 import 'package:provider/provider.dart';
 
 class PageEmailSignUp extends StatefulWidget {
