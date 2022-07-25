@@ -10,7 +10,7 @@ const int maxFailedLoadAttempts = 3;
 final AdRequest request =
     AdRequest(keywords: <String>['foo', 'bar'], contentUrl: 'http://foo.com/bar.html', nonPersonalizedAds: true);
 Map<String, String> adUnitId = kReleaseMode
-    ? {"aos": "ca-app-pub-2713562828985788/6593677327", "ios": "ca-app-pub-2713562828985788/6593677327"}
+    ? {"aos": "ca-app-pub-2713562828985788/6593677327", "ios": "ca-app-pub-2713562828985788/4705880580"}
     : {'aos': 'ca-app-pub-3940256099942544/3419835294', 'ios': 'ca-app-pub-3940256099942544/5662855259'};
 
 InterstitialAd? _interstitialAd;
