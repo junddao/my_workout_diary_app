@@ -214,6 +214,7 @@ class _PageUserViewState extends State<PageUserView> {
         child: CircularProgressIndicator(),
       );
     }
+    String? profileImage = context.watch<UserProvider>().me.profileImage;
     return Container(
       height: 80,
       width: 80,
@@ -222,7 +223,8 @@ class _PageUserViewState extends State<PageUserView> {
           ClipRRect(
               borderRadius: BorderRadius.circular(300),
               child: CachedNetworkImage(
-                imageUrl: context.watch<UserProvider>().me.profileImage ?? defaultUser,
+                imageUrl: (profileImage == null || profileImage.isEmpty) ? defaultUser : profileImage,
+                errorWidget: (context, url, error) => Image.network(defaultUser),
                 fit: BoxFit.cover,
                 height: 80,
                 width: 80,

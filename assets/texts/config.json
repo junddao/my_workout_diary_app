@@ -1,10 +1,10 @@
 {
   "api_project_name": "my_workout_diary_app",
-  "server_current_type": "prod",
+  "server_current_type": "local",
   "server_info": [
     {
       "type": "local",
-      "base_url": "http://192.168.0.100:17007",
+      "base_url": "http://192.168.1.82:17007",
       "websocket_server": ""
     },
     {

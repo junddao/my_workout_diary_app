@@ -8,7 +8,7 @@ const String defaultUser = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank
 
 const String APP_NAME = "마이 헬스 다이어리";
 
-const kPrimaryColor = DSColors.tomato;
+const kPrimaryColor = DSColors.blue5;
 const kTextColor = Color(0XFF171717);
 const kDefaultCollapseHeight = 100.0;
 
@@ -39,7 +39,7 @@ class SizeConfig {
   }
 }
 
-class Validation{
+class Validation {
   static var emailRegex =
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
 }

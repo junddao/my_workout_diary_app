@@ -62,7 +62,7 @@ class AuthProvider extends ParentProvider {
         logger.d('get firebase user error');
       }
       // firebase 유저 가져와서 서버에 로그인 합시다.
-      result = await signIn(fbUser!.email!, 'kakao');
+      result = await getToken(fbUser!.email!);
       if (result == false) {
         return false;
       }
@@ -125,14 +125,17 @@ class AuthProvider extends ParentProvider {
 
   Future<bool> getToken(String email) async {
     try {
+      setStateBusy();
       ModelRequestGetToken modelRequestGetToken = ModelRequestGetToken(email: email);
       const String url = '/user/get/token';
       Map<String, dynamic> _data = await ApiService().postWithOutToken(url, modelRequestGetToken.toMap());
       ModelResponseGetToken modelResponseGetToken = ModelResponseGetToken.fromMap(_data);
       ModelGetToken modelGetToken = modelResponseGetToken.data!.first;
       await ModelSharedPreferences.writeToken(modelGetToken.accessToken);
+      setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
@@ -166,7 +169,7 @@ class AuthProvider extends ParentProvider {
       // firebase 유저 가져와서 서버에 로그인 합시다.
       Map<String, dynamic> map = {
         'uid': fbUser?.uid.toString(),
-        'name': fbUser?.displayName ?? '',
+        'name': fbUser?.displayName ?? 'no named',
         'email': fbUser?.email ?? '',
         'profileImage': fbUser?.photoURL ?? '',
       };
@@ -176,7 +179,7 @@ class AuthProvider extends ParentProvider {
       }
 
       // firebase 유저 가져와서 서버에 로그인 합시다.
-      result = await signIn(fbUser!.email!, 'apple');
+      result = await getToken(fbUser!.email!);
       if (result == false) {
         return false;
       }
@@ -186,6 +189,7 @@ class AuthProvider extends ParentProvider {
       setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
@@ -226,6 +230,7 @@ class AuthProvider extends ParentProvider {
       setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }
@@ -238,10 +243,11 @@ class AuthProvider extends ParentProvider {
 
       if (fbUser == null) {
         logger.d('get firebase user error');
+        return false;
       }
 
       // 서버에 가입 호출
-      bool result = await signIn(fbUser?.email ?? '', password);
+      bool result = await signIn(fbUser.email ?? '', password);
       if (result == false) {
         return false;
       }
@@ -251,6 +257,7 @@ class AuthProvider extends ParentProvider {
       setStateIdle();
       return true;
     } catch (e) {
+      setStateIdle();
       return false;
     }
   }

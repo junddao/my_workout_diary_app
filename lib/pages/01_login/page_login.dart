@@ -1,12 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutterfire_ui/auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
-import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/components/plain_text_field.component.dart';
 import 'package:my_workout_diary_app/global/enum/view_state.dart';
 import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
@@ -39,7 +35,7 @@ class PageLoginView extends StatefulWidget {
 
 class _PageLoginViewState extends State<PageLoginView> {
   final _formKey = GlobalKey<FormState>();
-  late final FocusScopeNode node;
+
   bool isLoading = false;
 
   final TextEditingController _tecEmail = TextEditingController();
@@ -54,7 +50,6 @@ class _PageLoginViewState extends State<PageLoginView> {
 
   @override
   Widget build(BuildContext context) {
-    node = FocusScope.of(context);
     return Scaffold(
       body: _body(),
     );
@@ -67,23 +62,26 @@ class _PageLoginViewState extends State<PageLoginView> {
           child: CircularProgressIndicator(),
         );
       }
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Expanded(
-              flex: 2,
-              child: Center(
-                child: Text('마이 헬스 다이어리', style: DSTextStyles.bold24Grey06),
-              ),
-            ),
-            Expanded(
-              flex: 8,
+      return SizedBox(
+        height: SizeConfig.screenHeight,
+        width: SizeConfig.screenWidth,
+        child: SafeArea(
+          top: true,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 100.0),
+                  Text('마이 헬스 다이어리', style: DSTextStyles.bold24Grey06),
                   _buildEmailLogin(),
                   _buildKakaoLogin(),
                   Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
@@ -92,13 +90,14 @@ class _PageLoginViewState extends State<PageLoginView> {
                 ],
               ),
             ),
-          ],
+          ),
         ),
       );
     });
   }
 
   Widget _buildEmailLogin() {
+    FocusScopeNode node = FocusScope.of(context);
     return Form(
       key: _formKey,
       child: Padding(
@@ -106,15 +105,6 @@ class _PageLoginViewState extends State<PageLoginView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // const SizedBox(height: 100),
-            // Hero(
-            //   tag: 'logo',
-            //   child: Image.asset(
-            //     "assets/icons/ic_logo_text.png",
-            //     width: 209,
-            //     height: 50,
-            //   ),
-            // ),
             const SizedBox(height: 80),
             PlainTextField(
               controller: _tecEmail,
@@ -138,33 +128,6 @@ class _PageLoginViewState extends State<PageLoginView> {
                 return value == null || value.length > 3 ? null : '비밀번호는 4자리 이상만 가능합니다.';
               },
             ),
-            const SizedBox(height: 8),
-            // Container(
-            //   alignment: Alignment.centerRight,
-            //   padding: EdgeInsets.symmetric(horizontal: 20),
-            //   child: InkWell(
-            //     onTap: () {
-            //       logger.i("TODO");
-            //       // TODO
-            //       // Navigator.push(
-            //       //   context,
-            //       //   MaterialPageRoute(
-            //       //     builder: (context) {
-            //       //       return LoginScreen();
-            //       //     },
-            //       //   ),
-            //       // );
-            //     },
-            //     child: Text(
-            //       LocaleKeys.forgot_password.tr(),
-            //       style: TextStyle(
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-
             const SizedBox(height: 48),
             DSButton(
               width: SizeConfig.screenWidth - 40,
@@ -180,7 +143,6 @@ class _PageLoginViewState extends State<PageLoginView> {
               press: () => Navigator.of(context).pushNamed('PageEmailSignUp'),
             ),
             Divider(color: DSColors.divider),
-
             const SizedBox(height: 20),
           ],
         ),
@@ -302,7 +264,27 @@ class _PageLoginViewState extends State<PageLoginView> {
   }
 
   onLogin() async {
-    var result = await context.read<AuthProvider>().emailSignIn(email: _tecEmail, password: _tecPassword);
+    var result = await context.read<AuthProvider>().emailSignIn(email: _tecEmail.text, password: _tecPassword.text);
+
+    if (!result) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('로그인을 실패했어요. 다시 시도해 주세요.'),
+        ),
+      );
+      return;
+    }
+
+    result = await context.read<UserProvider>().getMe();
+    if (!result) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('유저 정보를 가져오지 못했습니다. 다시 시도해 주세요.'),
+        ),
+      );
+      return;
+    }
+
     if (result == true) {
       Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
     } else {

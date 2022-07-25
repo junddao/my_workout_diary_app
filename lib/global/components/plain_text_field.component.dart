@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
+import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 
 class PlainTextField extends StatefulWidget {
   final Widget? child;
@@ -54,51 +55,41 @@ class _PlainTextFieldState extends State<PlainTextField> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    double cellHeight = 54;
-    return Stack(children: [
-      // Container(
-      //   // margin: EdgeInsets.symmetric(vertical: 5),
-      //   margin: EdgeInsets.symmetric(horizontal: 20),
-      //   // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      //   // width: size.width * 0.8,
-      //   height: cellHeight,
-      //   decoration: BoxDecoration(
-      //       color: Colors.white, borderRadius: BorderRadius.circular(29)),
-      // ),
-      Container(
-        // margin: EdgeInsets.symmetric(horizontal: 20),
-        // padding: EdgeInsets.fromLTRB(20, 7, 20, 0),
-        // height: cellHeight,
-        child: TextFormField(
-          focusNode: widget.focusNode,
-          controller: widget.controller,
-          autocorrect: widget.autocorrect,
-          textCapitalization: TextCapitalization.none,
-          obscureText: widget.isSecure,
-          onChanged: (text) {
-            setState(() {});
-            if (widget.onChanged != null) {
-              widget.onChanged!(text);
-            }
-          },
-          validator: widget.warningMessage == null || widget.validator != null ? widget.validator : _validateText,
-          onEditingComplete: widget.onEditingComplete,
-          onFieldSubmitted: widget.onFieldSubmitted,
-          textInputAction: widget.textInputAction,
-          textAlignVertical: TextAlignVertical.center,
-          keyboardType: widget.keyboardType,
-          inputFormatters: widget.inputFormatters,
-          decoration: InputDecoration(
-            isDense: true,
-            labelText: widget.title,
-            hintText: widget.hintText,
-            fillColor: Colors.blue,
-            icon: widget.icon == null ? null : Icon(widget.icon, color: kPrimaryColor),
-            suffixIcon: suffixIcon(),
-          ),
+
+    return Container(
+      // margin: EdgeInsets.symmetric(horizontal: 20),
+      // padding: EdgeInsets.fromLTRB(20, 7, 20, 0),
+      // height: cellHeight,
+      child: TextFormField(
+        focusNode: widget.focusNode,
+        controller: widget.controller,
+        autocorrect: widget.autocorrect,
+        textCapitalization: TextCapitalization.none,
+        obscureText: widget.isSecure,
+        onChanged: (text) {
+          setState(() {});
+          if (widget.onChanged != null) {
+            widget.onChanged!(text);
+          }
+        },
+        validator: widget.warningMessage == null || widget.validator != null ? widget.validator : _validateText,
+        onEditingComplete: widget.onEditingComplete,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        textInputAction: widget.textInputAction,
+        textAlignVertical: TextAlignVertical.center,
+        keyboardType: widget.keyboardType,
+        inputFormatters: widget.inputFormatters,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
+          isDense: true,
+          labelText: widget.title,
+          hintText: widget.hintText,
+          fillColor: Colors.blue,
+          icon: widget.icon == null ? null : Icon(widget.icon, color: kPrimaryColor),
+          suffixIcon: suffixIcon(),
         ),
       ),
-    ]);
+    );
   }
 
   Widget? suffixIcon() {
