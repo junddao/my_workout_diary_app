@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +15,7 @@ class _WidgetSetWorkoutTimeState extends State<WidgetSetWorkoutTime> {
   double _currentSliderValue = 20;
   @override
   Widget build(BuildContext context) {
-    return Consumer<WorkoutProvider>(builder: (_, data, __) {
+    return Consumer<TimerProvider>(builder: (_, data, __) {
       _currentSliderValue = data.workoutTime;
       return Container(
         decoration: BoxDecoration(
@@ -47,7 +47,7 @@ class _WidgetSetWorkoutTimeState extends State<WidgetSetWorkoutTime> {
                   activeColor: DSColors.white,
                   label: _currentSliderValue.round().toString(),
                   onChanged: (double value) {
-                    context.read<WorkoutProvider>().setWorkoutTime(value);
+                    context.read<TimerProvider>().setWorkoutTime(value);
                     // setState(() {
                     //   _currentSliderValue = value;
                     // });

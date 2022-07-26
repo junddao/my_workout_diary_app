@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
+import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
+import 'package:my_workout_diary_app/global/provider/user_provider.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/page_tabs.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PageHome extends StatefulWidget {
@@ -15,7 +18,7 @@ class _PageHomeState extends State<PageHome> {
   int currentPageIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return const PageHomeView();
+    return PageHomeView();
   }
 }
 
@@ -40,6 +43,29 @@ class _PageHomeViewState extends State<PageHomeView> {
     if (myToken == '') {
       // 토큰 가져오는 api 호출
       Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+    } else {
+      bool result = await context.read<UserProvider>().getMe();
+      if (result == false) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('유저 정보를 가져오지 못했습니다.'),
+          ),
+        );
+        Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+      }
+
+      // access token 만 사용하므로 로그인마다 신규 토큰을 발급받아서 갱신해줌.
+      String email = context.read<UserProvider>().me.email ?? '';
+
+      result = await context.read<AuthProvider>().getToken(email);
+      if (result == false) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('신규 토큰을 발급받지 못했습니다.'),
+          ),
+        );
+        Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+      }
     }
   }
 
@@ -52,6 +78,6 @@ class _PageHomeViewState extends State<PageHomeView> {
   }
 
   Widget _body() {
-    return const PageTabs();
+    return PageTabs();
   }
 }

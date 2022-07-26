@@ -35,14 +35,15 @@ class ButtonType {
 
   Color? buttonColor() {
     return const <String, Color>{
-      'normal': DSColors.tomato,
-      'dark': DSColors.purple_red,
+      'normal': DSColors.blue03,
+      'normal_blue02': DSColors.blue02,
+      'normal_blue04': Colors.transparent,
+      'dark': DSColors.blue04,
       'transparent': Colors.transparent,
-      'success': DSColors.tomato,
+      'success': DSColors.blue03,
       'warning': DSColors.red01,
-      'disabled': DSColors.tomato_10,
-      'normal_black': Colors.transparent,
-      'normal_tomato': Colors.transparent,
+      'disabled': DSColors.blue03,
+      'normal_black': DSColors.blue03,
       'decline': DSColors.decline,
     }[type];
   }

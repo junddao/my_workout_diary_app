@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:my_workout_diary_app/global/enum/item_type.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/global/style/ds_text_styles.dart';
 import 'package:my_workout_diary_app/global/util/data_converter.dart';
@@ -15,7 +15,7 @@ class WidgetRestTime extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<WorkoutProvider>().setItemType(ItemType.rest);
+        context.read<TimerProvider>().setItemType(ItemType.rest);
       },
       child: Padding(
         padding: const EdgeInsets.all(5),
@@ -44,7 +44,7 @@ class WidgetRestTime extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                DataConvert.intToTimeLeft(context.watch<WorkoutProvider>().restTime.toInt()),
+                DataConvert.intToTimeLeft(context.watch<TimerProvider>().restTime.toInt()),
                 style: DSTextStyles.bold18FacebookBlue,
               ),
             ],

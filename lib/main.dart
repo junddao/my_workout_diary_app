@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:my_workout_diary_app/firebase_options.dart';
-import 'package:my_workout_diary_app/global/provider/login_provider.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/model/model_config.dart';
+import 'package:my_workout_diary_app/global/provider/auth_provider.dart';
+import 'package:my_workout_diary_app/global/provider/file_provider.dart';
+import 'package:my_workout_diary_app/global/provider/user_provider.dart';
+import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
+import 'package:my_workout_diary_app/global/provider/record_provider.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
 import 'package:my_workout_diary_app/page_home.dart';
 import 'package:my_workout_diary_app/route.dart';
@@ -19,8 +27,20 @@ void main() {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await readConfigFile();
+    MobileAds.instance.initialize();
     runApp(const MyApp());
   });
+}
+
+Future<void> readConfigFile() async {
+  var configJson;
+
+  configJson = await rootBundle.loadString('assets/texts/config.json');
+
+  print(configJson);
+  final configObject = jsonDecode(configJson);
+  ModelConfig().fromJson(configObject);
 }
 
 class MyApp extends StatelessWidget {
@@ -31,15 +51,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => WorkoutProvider()),
-        ChangeNotifierProvider(create: (_) => LoginProvider()),
+        ChangeNotifierProvider(create: (_) => TimerProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => RecordProvider()),
+        ChangeNotifierProvider(create: (_) => FileProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
             primaryColor: Colors.white,
             visualDensity: VisualDensity.adaptivePlatformDensity,
-            accentColor: DSColors.tomato,
+            accentColor: DSColors.blue5,
             appBarTheme: AppBarTheme(
               color: DSColors.white,
               foregroundColor: DSColors.black,
@@ -51,7 +74,7 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: Colors.white),
         onGenerateRoute: Routers.generateRoute,
         debugShowCheckedModeBanner: false,
-        home: const PageHome(),
+        home: PageHome(),
       ),
     );
   }

@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jtb.workoutdiary">
    <application
-        android:label="my_workout_diary_app"
+        android:label="오늘운동"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2713562828985788~5354400235"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

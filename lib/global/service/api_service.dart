@@ -44,8 +44,8 @@ class ApiService {
     try {
       final token = await _getAuthorizationToken();
       print(token);
-      _headers['dnss-token'] = '$token';
-      print('${ModelConfig().serverBaseUrl}');
+      _headers['Authorization'] = 'Bearer $token';
+      print(ModelConfig().serverBaseUrl);
       response = await Dio()
           .get('${ModelConfig().serverBaseUrl}$_path',
               options: Options(
@@ -64,14 +64,40 @@ class ApiService {
     return response?.data;
   }
 
-  Future<dynamic> post(String _path, Map map) async {
-    print('Api get : url $_path start.');
+  Future<dynamic> delete(String _path) async {
+    print('Api delete : url $_path start.');
+    var response;
+    try {
+      final token = await _getAuthorizationToken();
+      print(token);
+      _headers['Authorization'] = 'Bearer $token';
+      print(ModelConfig().serverBaseUrl);
+      response = await Dio()
+          .delete('${ModelConfig().serverBaseUrl}$_path',
+              options: Options(
+                headers: _headers,
+              ))
+          .timeout(Duration(seconds: 10));
+      print('Api delete : url ${ModelConfig().serverBaseUrl}$_path  done.');
+      print('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      DioExceptions.fromDioError(e).toString();
+      throw Exception();
+    } on SocketException {
+      print('No network');
+      throw Exception();
+    }
+    return response?.data;
+  }
+
+  Future<dynamic> post(String _path, Map? map) async {
+    print('Api post : url $_path start.');
 
     var response;
     try {
       final token = await _getAuthorizationToken();
       print(token);
-      _headers['dnss-token'] = '$token';
+      _headers['Authorization'] = 'Bearer $token';
 
       var _data = jsonEncode(map);
 
@@ -86,7 +112,42 @@ class ApiService {
           )
           .timeout(Duration(seconds: 10));
 
-      print('Api get : url ${ModelConfig().serverBaseUrl}$_path  done.');
+      print('Api post : url ${ModelConfig().serverBaseUrl}$_path  done.');
+      print('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      print(e.error.toString());
+      DioExceptions.fromDioError(e).toString();
+      throw Exception();
+    } on SocketException {
+      print('No network');
+      throw Exception();
+    }
+    return response?.data;
+  }
+
+  Future<dynamic> patch(String _path, Map? map) async {
+    print('Api patch : url $_path start.');
+
+    var response;
+    try {
+      final token = await _getAuthorizationToken();
+      print(token);
+      _headers['Authorization'] = 'Bearer $token';
+
+      var _data = jsonEncode(map);
+
+      print('${ModelConfig().serverBaseUrl}');
+      response = await Dio()
+          .patch(
+            '${ModelConfig().serverBaseUrl}$_path',
+            data: _data,
+            options: Options(
+              headers: _headers,
+            ),
+          )
+          .timeout(Duration(seconds: 10));
+
+      print('Api patch : url ${ModelConfig().serverBaseUrl}$_path  done.');
       print('dio response = ${response.toString()}');
     } on DioError catch (e) {
       print(e.error.toString());
@@ -100,7 +161,7 @@ class ApiService {
   }
 
   Future<dynamic> postWithOutToken(String _path, Map map) async {
-    print('Api get : url $_path start.');
+    print('Api post without token : url $_path start.');
 
     var response;
     try {
@@ -117,7 +178,7 @@ class ApiService {
           )
           .timeout(Duration(seconds: 10));
 
-      print('Api get : url ${ModelConfig().serverBaseUrl}$_path  done.');
+      print('Api post without token : url ${ModelConfig().serverBaseUrl}$_path  done.');
       print('dio response = ${response.toString()}');
     } on DioError catch (e) {
       DioExceptions.fromDioError(e).toString();
@@ -130,14 +191,14 @@ class ApiService {
   }
 
   Future<dynamic> postMultiPart(String _path, List<File> _files, String type) async {
-    print('Api get : url $_path start.');
+    print('Api post multipart : url $_path start.');
 
     final token = await _getAuthorizationToken();
     print(token);
     print('${ModelConfig().serverBaseUrl}');
     var response;
     try {
-      _multiPartHeaders['dnss-token'] = '$token';
+      _multiPartHeaders['Authorization'] = 'Bearer $token';
       var _formData = FormData();
       for (int i = 0; i < _files.length; i++) {
         _formData.files.add(
@@ -170,7 +231,7 @@ class ApiService {
         },
       ).timeout(const Duration(seconds: 30));
 
-      print('Api get : url ${ModelConfig().serverBaseUrl}$_path  done.');
+      print('Api post multipart : url ${ModelConfig().serverBaseUrl}$_path  done.');
       print('dio response = ${response.toString()}');
     } on DioError catch (e) {
       DioExceptions.fromDioError(e).toString();

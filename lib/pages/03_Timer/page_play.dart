@@ -11,7 +11,7 @@ import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/enum/countdown_type.dart';
 import 'package:my_workout_diary_app/global/enum/item_type.dart';
 import 'package:my_workout_diary_app/global/enum/working_type.dart';
-import 'package:my_workout_diary_app/global/provider/workout_provider.dart';
+import 'package:my_workout_diary_app/global/provider/timer_provider.dart';
 import 'package:my_workout_diary_app/global/service/audio_service.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
 import 'package:my_workout_diary_app/global/style/ds_colors.dart';
@@ -48,7 +48,7 @@ class _PagePlayViewState extends State<PagePlayView> {
 
   bool isStarted = false;
   bool isWorkout = false;
-  late WorkoutProvider workoutProvider;
+  late TimerProvider workoutProvider;
   late Timer _timer;
   int _time = 0;
   bool _isRunning = false;
@@ -79,7 +79,7 @@ class _PagePlayViewState extends State<PagePlayView> {
 
   @override
   Widget build(BuildContext context) {
-    workoutProvider = context.watch<WorkoutProvider>();
+    workoutProvider = context.watch<TimerProvider>();
 
     return Scaffold(
       appBar: _appBar(),
@@ -282,18 +282,9 @@ class _PagePlayViewState extends State<PagePlayView> {
         int duration = getDuration();
 
         _start(duration);
-
-        // Future.delayed(
-        //   Duration(seconds: duration - 4),
-        //   () async {
-        //     // var duration = await player.setAsset('assets/audios/countdown.wav');
-        //     await AudioService().start();
-        //   },
-        // );
       },
       onComplete: () {
         _reset();
-        // Future.microtask(() async => await AudioService().stop());
 
         if (workoutProvider.workingType == WorkingType.rest) {
           workoutProvider.setWorkingType(WorkingType.workout);

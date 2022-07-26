@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>My Workout Diary App</string>
+	<string>오늘운동</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>my_workout_diary_app</string>
+	<string>마이 헬스 다이어리</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -35,6 +35,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-2713562828985788~7298300625</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakao0ce0a45061c3064eba6d0e8d1f960317</string>
@@ -43,8 +45,14 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>마이 헬스 다이어리가 프로필 사진 변경을 위해 카메라에 접근합니다.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>... explain why the app uses the microphone here ...</string>
+	<string>"마이 헬스 다이어리"가 마이크에 접근</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>"마이 헬스 다이어리"가 사진을 게시글에 첨부, 내프로필에 사진 등록하는 기능 사용을 위해 앨범에 접근하도록 허용합니다.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
