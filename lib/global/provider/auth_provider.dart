@@ -262,12 +262,13 @@ class AuthProvider extends ParentProvider {
     }
   }
 
-  Future<bool> signOut() async {
+  Future<bool> signOut(SocialType socialType) async {
     setStateBusy();
     try {
       setStateBusy();
       bool result = false;
-      await _kakaoLogin.logout();
+      if (socialType == SocialType.kakao) await _kakaoLogin.logout();
+
       // if (loginSocial == SocialType.kakao) {
       //   result = await _kakaoLogin.logout();
       // }

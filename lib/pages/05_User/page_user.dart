@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk_share.dart';
 import 'package:my_workout_diary_app/global/components/ds_button.dart';
 import 'package:my_workout_diary_app/global/components/ds_input_field.dart';
 import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
+import 'package:my_workout_diary_app/global/enum/socail_type.dart';
 import 'package:my_workout_diary_app/global/enum/view_state.dart';
 import 'package:my_workout_diary_app/global/model/user/model_request_update.dart';
 import 'package:my_workout_diary_app/global/model/user/model_response_update.dart';
@@ -68,8 +71,8 @@ class _PageUserViewState extends State<PageUserView> {
         PopupMenuButton<int>(
           onSelected: (value) {
             if (value == 0) {
-              context.read<AuthProvider>().signOut();
-              Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+              _logout();
+              // Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
             } else if (value == 1) {
               context.read<AuthProvider>().drop();
             }
@@ -258,9 +261,13 @@ class _PageUserViewState extends State<PageUserView> {
   }
 
   void _logout() async {
-    bool result = await context.read<AuthProvider>().signOut();
+    SocialType socialType = SocialType.values.byName(context.read<UserProvider>().me.social ?? 'none');
+    bool result = await context.read<AuthProvider>().signOut(socialType);
     if (result) {
-      Navigator.of(context).pushNamed('PageLogin');
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        'PageLogin',
+        (route) => false,
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

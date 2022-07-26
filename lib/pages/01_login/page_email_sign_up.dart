@@ -116,7 +116,7 @@ class _PageEmailSignUpState extends State<PageEmailSignUp> {
                             controller: _tecNickname,
                             hintText: "닉네임",
                             showClear: true,
-                            onEditingComplete: () => context.nextEditableTextFocus(),
+                            // onEditingComplete: () => context.nextEditableTextFocus(),
                             validator: (value) {
                               return value == null || value.isEmpty ? "닉네임을 확인해주세요" : null;
                             },
