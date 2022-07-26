@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jtb.workoutdiary">
    <application
-        android:label="마이 헬스 다이어리"
+        android:label="오늘운동"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <meta-data
