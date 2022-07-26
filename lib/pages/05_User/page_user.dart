@@ -69,12 +69,23 @@ class _PageUserViewState extends State<PageUserView> {
       automaticallyImplyLeading: false,
       actions: [
         PopupMenuButton<int>(
-          onSelected: (value) {
+          onSelected: (value) async {
             if (value == 0) {
               _logout();
               // Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
             } else if (value == 1) {
-              context.read<AuthProvider>().drop();
+              bool result = await DSDialog.showTwoButtonDialog(
+                  context: context,
+                  title: '주의',
+                  subTitle: '탈퇴 후 재가입은 운영자의 승인이 필요합니다.\n탈퇴 하시겠습니까?',
+                  btn1Text: '아니요.',
+                  btn2Text: '네');
+              if (result == true) {
+                await context.read<AuthProvider>().drop();
+                Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+              } else {
+                return;
+              }
             }
           },
           itemBuilder: (context) => [

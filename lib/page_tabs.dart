@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:my_workout_diary_app/global/components/ds_two_button_dialog.dart';
+import 'package:my_workout_diary_app/global/model/model_shared_preferences.dart';
 import 'package:my_workout_diary_app/global/provider/record_provider.dart';
 import 'package:my_workout_diary_app/global/service/timer_service.dart';
 import 'package:my_workout_diary_app/global/style/constants.dart';
@@ -54,6 +55,17 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     createInterstitialAd();
+    isDropped();
+  }
+
+  void isDropped() async {
+    String? token = await ModelSharedPreferences.readToken();
+    if (token!.isEmpty) {
+      DSDialog.showOneButtonDialog(context: context, title: '탈퇴확인', subTitle: '탈퇴한 유저는 1주일 뒤 재가입 가능합니다.', btnText: "확인")
+          .then((value) {
+        Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
+      });
+    }
   }
 
   @override
