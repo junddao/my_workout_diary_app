@@ -71,8 +71,11 @@ class RecordProvider extends ParentProvider {
   }
 
   void setPassedTime() {
-    _passedTime = DateTime.now();
-    _time = passedTime.difference(startTime).inSeconds.toDouble() * 10;
+    if (_isStart == true) {
+      _passedTime = DateTime.now();
+      _time = passedTime.difference(startTime).inSeconds.toDouble() * 10;
+    }
+
     notifyListeners();
   }
 
